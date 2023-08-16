@@ -67,19 +67,18 @@ class PermissionModel:
             raise Exception(ex)
 
     @classmethod
-    def update_permission(self, permission):
+    def update_permission(self, permissionData):
         try:
             connection = get_connection()
-
+            print("entre permission")
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """UPDATE permissions SET title = %s, duration = %s, released = %s 
+                    """UPDATE permissions SET permission = %s, description = %s 
                                 WHERE id = %s""",
                     (
-                        permission.title,
-                        permission.duration,
-                        permission.released,
-                        permission.id,
+                        permissionData.permission,
+                        permissionData.description,
+                        permissionData.id,
                     ),
                 )
                 affected_rows = cursor.rowcount

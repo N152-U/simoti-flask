@@ -53,15 +53,14 @@ def add_permission():
 @main.route("/update/<id>", methods=["PUT"])
 def update_permission(id):
     try:
-        title = request.json["title"]
-        duration = int(request.json["duration"])
-        released = request.json["released"]
-        permission = Permission(id, title, duration, released)
-
-        affected_rows = PermissionModel.update_permission(permission)
-
+        permission = request.json["permission"]
+        description = request.json["description"]
+        permissionData = Permission(id, permission, description)
+     
+        affected_rows = PermissionModel.update_permission(permissionData)
+        print(affected_rows)
         if affected_rows == 1:
-            return jsonify(permission.id)
+            return jsonify(permissionData.id)
         else:
             return jsonify({"message": "No permission updated"}), 404
 
