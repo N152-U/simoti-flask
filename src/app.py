@@ -4,7 +4,7 @@ from flask_cors import CORS, cross_origin
 from config import config
 
 # Routes
-from routes import PermissionRouter
+from routes import PermissionRouter, RoleRouter
 
 app = Flask(__name__)
 
@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     # Blueprints
     app.register_blueprint(PermissionRouter.main, url_prefix="/api/v1/permissions")
+    app.register_blueprint(RoleRouter.main, url_prefix="/api/v1/roles")
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
