@@ -10,7 +10,7 @@ from models.PermissionModel import PermissionModel
 main = Blueprint("permission_blueprint", __name__)
 
 
-@main.route("/")
+@main.route("")
 def get_permissions():
     try:
         permissions = PermissionModel.get_permissions()
@@ -51,19 +51,19 @@ def add_permission():
 
 
 @main.route("/update/<id>", methods=["PUT"])
-def update_movie(id):
+def update_permission(id):
     try:
         title = request.json["title"]
         duration = int(request.json["duration"])
         released = request.json["released"]
-        movie = Permission(id, title, duration, released)
+        permission = Permission(id, title, duration, released)
 
-        affected_rows = PermissionModel.update_movie(movie)
+        affected_rows = PermissionModel.update_permission(permission)
 
         if affected_rows == 1:
-            return jsonify(movie.id)
+            return jsonify(permission.id)
         else:
-            return jsonify({"message": "No movie updated"}), 404
+            return jsonify({"message": "No permission updated"}), 404
 
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
@@ -79,7 +79,7 @@ def delete_permission(id):
         if affected_rows == 1:
             return jsonify(permission.id)
         else:
-            return jsonify({"message": "No movie deleted"}), 404
+            return jsonify({"message": "No permission deleted"}), 404
 
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500

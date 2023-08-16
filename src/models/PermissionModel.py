@@ -12,7 +12,7 @@ class PermissionModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id, permission, description FROM permissions ORDER BY permission ASC"
+                    "SELECT id, permission, description,active FROM permissions ORDER BY permission ASC"
                 )
                 resultset = cursor.fetchall()
 
@@ -32,14 +32,14 @@ class PermissionModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id, permission, description FROM permissions WHERE id = %s",
+                    "SELECT id, permission, description, active FROM permissions WHERE id = %s",
                     (id,),
                 )
                 row = cursor.fetchone()
 
                 permission = None
                 if row != None:
-                    permission = Permission(row[0], row[1], row[2])
+                    permission = Permission(row[0], row[1], row[2], row[3])
                     permission = permission.to_JSON()
 
             connection.close()
@@ -67,15 +67,20 @@ class PermissionModel:
             raise Exception(ex)
 
     @classmethod
-    def update_movie(self, movie):
+    def update_permission(self, permission):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """UPDATE movie SET title = %s, duration = %s, released = %s 
+                    """UPDATE permissions SET title = %s, duration = %s, released = %s 
                                 WHERE id = %s""",
-                    (movie.title, movie.duration, movie.released, movie.id),
+                    (
+                        permission.title,
+                        permission.duration,
+                        permission.released,
+                        permission.id,
+                    ),
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
