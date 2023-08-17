@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.Role import Role
+from datetime import datetime
 
 
 class RoleModel:
@@ -49,19 +50,21 @@ class RoleModel:
     def add_role(self, roleData):
         try:
             connection = get_connection()
-            print(roleData.id,roleData.permissions,roleData.role)
             with connection.cursor() as cursor:
+                name = "ADMIN"
+                now = datetime.now()
+                now = now.strftime("%G-%m-%d %X")
                 cursor.execute(
-                    """INSERT INTO roles (id, role) 
-                                VALUES (%s, %s)""",
-                    (roleData.id, roleData.role),
+                    """ INSERT INTO roles (id, role,created_at,created_by,updated_at,updated_by)
+                                VALUES (%s, %s,%s,%s,%s,%s) """,
+                    (roleData.id, roleData.role, now, name, now, name),
                 )
-                
-                cursor.execute(
-                    """INSERT INTO roles (id, role) 
-                                VALUES (%s, %s)""",
-                    (roleData.id, roleData.role),
-                )
+                for permission in roleData.permissions:
+                    cursor.execute(
+                        """ INSERT INTO role_has_permissions (role_id, permission_id) 
+                                    VALUES (%s, %s) """,
+                        (roleData.id, permission),
+                    )
                 affected_rows = cursor.rowcount
                 connection.commit()
 

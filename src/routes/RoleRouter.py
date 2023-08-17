@@ -37,7 +37,7 @@ def add_role():
         permissions = request.json["permissions"]
         role = request.json["role"]
         id = uuid.uuid4()
-        newPermission = Role(str(id), permissions, role)
+        newPermission = Role(str(id), role, permissions)
 
         affected_rows = RoleModel.add_role(newPermission)
 
