@@ -31,6 +31,22 @@ def get_role(id):
         return jsonify({"message": str(ex)}), 500
 
 
+@main.route("/getUpdate/<id>")
+def get_update_role(id):
+    try:
+        role = RoleModel.get_update_role(id)
+        lista_con_elementos = []
+        for permission in role['permissions']:
+            lista_con_elementos.append(permission['id'])
+        role['permissions'] = lista_con_elementos
+        if role != None:
+            return jsonify(role)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
 @main.route("/add", methods=["POST"])
 def add_role():
     try:

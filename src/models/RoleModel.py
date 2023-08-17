@@ -54,6 +54,36 @@ class RoleModel:
             raise Exception(ex)
 
     @classmethod
+    def get_update_role(self, id):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT r.id,r.role, 
+                        json_agg(json_build_object(
+                        	'id',p.id:: varchar(255)
+                        )) permissions
+                        FROM roles r
+                        INNER JOIN role_has_permissions rhp ON rhp.role_id = r.id 
+                        INNER JOIN permissions p ON p.id = rhp.permission_id
+                        WHERE r.id = %s
+                        GROUP BY r.id,r.role """,
+                    (id,),
+                )
+                row = cursor.fetchone()
+
+                role = None
+                if row != None:
+                    role = Role(row[0], row[1], row[2])
+                    role = role.to_JSON()
+
+            connection.close()
+            return role
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
     def add_role(self, roleData):
         try:
             connection = get_connection()
