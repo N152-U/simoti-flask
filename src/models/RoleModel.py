@@ -27,7 +27,7 @@ class RoleModel:
     def get_role(self, id):
         try:
             connection = get_connection()
-            print(id)
+
             with connection.cursor() as cursor:
                 cursor.execute(
                     """SELECT r.id,r.role, 
@@ -45,7 +45,7 @@ class RoleModel:
 
                 role = None
                 if row != None:
-                    role = Role(row[0], row[1],row[2])
+                    role = Role(row[0], row[1], row[2])
                     role = role.to_JSON()
 
             connection.close()
@@ -104,14 +104,17 @@ class RoleModel:
             raise Exception(ex)
 
     @classmethod
-    def delete_permission(self, permission):
+    def delete_role(self, role):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM permissions WHERE id = %s", (permission.id,)
+                    "DELETE FROM role_has_permissions WHERE role_id = '{0}'", (role.id)
                 )
+                affected_rows = cursor.rowcount
+                connection.commit()
+                cursor.execute("DELETE FROM roles WHERE id = '{0}'".format(role.id))
                 affected_rows = cursor.rowcount
                 connection.commit()
 

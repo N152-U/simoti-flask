@@ -62,23 +62,22 @@ def update_permission(id):
         if affected_rows == 1:
             return jsonify(permissionData.id)
         else:
-            return jsonify({"message": "No permission updated"}), 404
+            return jsonify({"message": "No role updated"}), 404
 
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
 
 @main.route("/delete/<id>", methods=["DELETE"])
-def delete_permission(id):
+def delete_role(id):
     try:
-        permission = Role(id)
-
-        affected_rows = RoleModel.delete_permission(permission)
+        role = Role(id)
+        affected_rows = RoleModel.delete_role(role)
 
         if affected_rows == 1:
-            return jsonify(permission.id)
+            return jsonify(role.id)
         else:
-            return jsonify({"message": "No permission deleted"}), 404
+            return jsonify({"message": "No role deleted"}), 404
 
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
