@@ -8,7 +8,6 @@ class RoleModel:
     def get_roles(self):
         try:
             connection = get_connection()
-            print("connection", connection)
             permissions = []
 
             with connection.cursor() as cursor:
@@ -25,24 +24,32 @@ class RoleModel:
             raise Exception(ex)
 
     @classmethod
-    def get_permission(self, id):
+    def get_role(self, id):
         try:
             connection = get_connection()
-
+            print(id)
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id, permission, description, active FROM permissions WHERE id = %s",
+                    """SELECT r.id,r.role, 
+                        json_agg(json_build_object(
+                        	'description',p.description:: varchar(255)
+                        )) permissions
+                        FROM roles r
+                        INNER JOIN role_has_permissions rhp ON rhp.role_id = r.id 
+                        INNER JOIN permissions p ON p.id = rhp.permission_id
+                        WHERE r.id = %s
+                        GROUP BY r.id,r.role """,
                     (id,),
                 )
                 row = cursor.fetchone()
 
-                permission = None
+                role = None
                 if row != None:
-                    permission = Role(row[0], row[1], row[2], row[3])
-                    permission = permission.to_JSON()
+                    role = Role(row[0], row[1],row[2])
+                    role = role.to_JSON()
 
             connection.close()
-            return permission
+            return role
         except Exception as ex:
             raise Exception(ex)
 

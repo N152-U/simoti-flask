@@ -20,11 +20,11 @@ def get_roles():
 
 
 @main.route("/<id>")
-def get_permission(id):
+def get_role(id):
     try:
-        permission = RoleModel.get_permission(id)
-        if permission != None:
-            return jsonify(permission)
+        role = RoleModel.get_role(id)
+        if role != None:
+            return jsonify(role)
         else:
             return jsonify({}), 404
     except Exception as ex:
