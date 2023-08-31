@@ -1,5 +1,5 @@
 class Role:
-    def __init__(self, id, role=None, permissions=None, active=True) -> None:
+    def __init__(self, id=None, role=None, permissions=None, active=True) -> None:
         self.id = id
         self.role = role
         self.permissions = permissions

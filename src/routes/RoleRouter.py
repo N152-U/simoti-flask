@@ -36,9 +36,9 @@ def get_update_role(id):
     try:
         role = RoleModel.get_update_role(id)
         lista_con_elementos = []
-        for permission in role['permissions']:
-            lista_con_elementos.append(permission['id'])
-        role['permissions'] = lista_con_elementos
+        for permission in role["permissions"]:
+            lista_con_elementos.append(permission["id"])
+        role["permissions"] = lista_con_elementos
         if role != None:
             return jsonify(role)
         else:
@@ -67,13 +67,13 @@ def add_role():
 
 
 @main.route("/update/<id>", methods=["PUT"])
-def update_permission(id):
+def update_role(id):
     try:
-        permission = request.json["permission"]
-        description = request.json["description"]
-        permissionData = Role(id, permission, description)
+        permissions = request.json["permissions"]
+        role = request.json["role"]
+        permissionData = Role(str(id), role, permissions)
 
-        affected_rows = RoleModel.update_permission(permissionData)
+        affected_rows = RoleModel.update_role(permissionData)
         print(affected_rows)
         if affected_rows == 1:
             return jsonify(permissionData.id)

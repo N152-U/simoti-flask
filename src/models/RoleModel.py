@@ -111,23 +111,38 @@ class RoleModel:
             raise Exception(ex)
 
     @classmethod
-    def update_permission(self, permissionData):
+    def update_role(self, roleData):
         try:
             connection = get_connection()
-            print("entre permission")
+
             with connection.cursor() as cursor:
+                name = "ADMIN"
+                now = datetime.now()
+                now = now.strftime("%G-%m-%d %X")
+                print("DELETE FROM role_has_permissions WHERE role_id = '{0}'",
+                    (roleData.id))
                 cursor.execute(
-                    """UPDATE permissions SET permission = %s, description = %s 
-                                WHERE id = %s""",
-                    (
-                        permissionData.permission,
-                        permissionData.description,
-                        permissionData.id,
-                    ),
+                    "DELETE FROM role_has_permissions WHERE role_id = '{0}'",
+                    (roleData.id),
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
 
+                cursor.execute(
+                    """ UPDATE roles 
+                        SET role = %s,updated_at = %s,updated_by = %s WHERE id = %s""",
+                    (roleData.role, now, name, roleData.id),
+                )
+                affected_rows = cursor.rowcount
+                connection.commit()
+                for permission in roleData.permissions:
+                    cursor.execute(
+                        """ INSERT INTO role_has_permissions (role_id, permission_id) 
+                                    VALUES (%s, %s) """,
+                        (roleData.id, permission),
+                    )
+                affected_rows = cursor.rowcount
+                connection.commit()
             connection.close()
             return affected_rows
         except Exception as ex:
