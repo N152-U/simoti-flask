@@ -8,18 +8,18 @@ class RoleModel:
     def get_roles(self):
         try:
             connection = get_connection()
-            permissions = []
+            roles = []
 
             with connection.cursor() as cursor:
                 cursor.execute("SELECT id, role,active FROM roles ORDER BY role ASC")
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    movie = Role(row[0], row[1], row[2])
-                    permissions.append(movie.to_JSON())
+                    role = Role(row[0], row[1], row[2])
+                    roles.append(role.to_JSON())
 
             connection.close()
-            return permissions
+            return roles
         except Exception as ex:
             raise Exception(ex)
 
