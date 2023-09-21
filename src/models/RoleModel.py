@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.Role import Role
+from .entities.RoleAll import RoleAll
 from datetime import datetime
 
 
@@ -15,7 +16,7 @@ class RoleModel:
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    role = Role(row[0], row[1], row[2])
+                    role = RoleAll(row[0], row[1], row[2])
                     roles.append(role.to_JSON())
 
             connection.close()
