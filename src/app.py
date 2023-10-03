@@ -19,8 +19,8 @@ if __name__ == "__main__":
     app.config.from_object(config["development"])
 
     # Blueprints
-    app.register_blueprint(PermissionRouter.main, url_prefix="/api/v1/permissions")
-    app.register_blueprint(RoleRouter.main, url_prefix="/api/v1/roles")
+    app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
+    app.register_blueprint(RoleRouter.main, url_prefix="/simoti/api/v1/roles")
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
