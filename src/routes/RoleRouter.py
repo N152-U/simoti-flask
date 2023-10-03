@@ -71,8 +71,9 @@ def update_role(id):
     try:
         permissions = request.json["permissions"]
         role = request.json["role"]
-        permissionData = Role(str(id), role, permissions)
+        permissionData = Role(id, role, permissions)
 
+        RoleModel.delete_role_by_id(permissionData)
         affected_rows = RoleModel.update_role(permissionData)
         print(affected_rows)
         if affected_rows == 1:

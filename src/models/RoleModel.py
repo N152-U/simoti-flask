@@ -65,8 +65,8 @@ class RoleModel:
                         	'id',p.id:: varchar(255)
                         )) permissions
                         FROM roles r
-                        INNER JOIN role_has_permissions rhp ON rhp.role_id = r.id 
-                        INNER JOIN permissions p ON p.id = rhp.permission_id
+                        LEFT JOIN role_has_permissions rhp ON rhp.role_id = r.id 
+                        LEFT JOIN permissions p ON p.id = rhp.permission_id
                         WHERE r.id = %s
                         GROUP BY r.id,r.role """,
                     (id,),
@@ -111,30 +111,44 @@ class RoleModel:
             raise Exception(ex)
 
     @classmethod
-    def update_role(self, roleData):
+    def delete_role_by_id(self, roleData):
         try:
             connection = get_connection()
-
+            
             with connection.cursor() as cursor:
-                name = "ADMIN"
-                now = datetime.now()
-                now = now.strftime("%G-%m-%d %X")
-                print("DELETE FROM role_has_permissions WHERE role_id = '{0}'",
-                    (roleData.id))
                 cursor.execute(
-                    "DELETE FROM role_has_permissions WHERE role_id = '{0}'",
-                    (roleData.id),
+                    "DELETE FROM role_has_permissions WHERE role_id = '5b1f90fd-2e32-428a-aba0-8cf0157f5bdf'"
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
+            connection.close()
+            print("connection",affected_rows)
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
 
+    @classmethod
+    def update_role(self, roleData):
+        try:
+            connection2 = get_connection()
+            connection3 = get_connection()
+            
+            now = datetime.now()
+            now = now.strftime("%G-%m-%d %X")
+            name = "ADMIN"
+              
+            with connection2.cursor() as cursor:
+                
                 cursor.execute(
                     """ UPDATE roles 
                         SET role = %s,updated_at = %s,updated_by = %s WHERE id = %s""",
                     (roleData.role, now, name, roleData.id),
                 )
                 affected_rows = cursor.rowcount
-                connection.commit()
+                connection2.commit()
+            connection2.close()
+            print("connection2",affected_rows)
+            with connection3.cursor() as cursor:
                 for permission in roleData.permissions:
                     cursor.execute(
                         """ INSERT INTO role_has_permissions (role_id, permission_id) 
@@ -142,8 +156,9 @@ class RoleModel:
                         (roleData.id, permission),
                     )
                 affected_rows = cursor.rowcount
-                connection.commit()
-            connection.close()
+                connection3.commit()
+            connection3.close()
+            print("connection3",affected_rows)
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
@@ -152,6 +167,7 @@ class RoleModel:
     def delete_role(self, role):
         try:
             connection = get_connection()
+            connection2 = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -159,11 +175,14 @@ class RoleModel:
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
+            connection.close()
+            
+            with connection2.cursor() as cursor:
                 cursor.execute("DELETE FROM roles WHERE id = '{0}'".format(role.id))
                 affected_rows = cursor.rowcount
-                connection.commit()
-
-            connection.close()
+                connection2.commit()
+            connection2.close()
+            
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
