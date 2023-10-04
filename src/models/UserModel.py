@@ -41,7 +41,9 @@ class UserModel:
                     INNER JOIN roles r ON r.id = u.role_id
                     WHERE u.active = true
                     AND u.id = '{0}'
-                    """.format(id)
+                    """.format(
+                        id
+                    )
                 )
                 row = cursor.fetchone()
 
@@ -56,15 +58,15 @@ class UserModel:
             raise Exception(ex)
 
     @classmethod
-    def add_permission(self, permission):
+    def add_user(self, user):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """INSERT INTO permissions (id, permission, description) 
-                                VALUES (%s, %s, %s)""",
-                    (permission.id, permission.permission, permission.description),
+                    """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password) 
+                                VALUES (%s, %s, %s,%s, %s, %s, %s)""",
+                    (user.id, user.role_id, user.username,user.first_name, user.middle_name, user.last_name, user.password),
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
