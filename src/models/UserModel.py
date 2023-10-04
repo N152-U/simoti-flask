@@ -1,5 +1,5 @@
 from database.db import get_connection
-from .entities.User import User,UpdateUser
+from .entities.User import User, UpdateUser
 
 
 class UserModel:
@@ -134,13 +134,13 @@ class UserModel:
             raise Exception(ex)
 
     @classmethod
-    def delete_permission(self, permission):
+    def delete_user(self, user):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM permissions WHERE id = %s", (permission.id,)
+                    "UPDATE users SET active=false WHERE id = %s", (user.id,)
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
