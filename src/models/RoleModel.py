@@ -123,7 +123,7 @@ class RoleModel:
                 affected_rows = cursor.rowcount
                 connection.commit()
             connection.close()
-            print("connection",affected_rows)
+
             return affected_rows
         except Exception as ex:
             raise Exception(ex)

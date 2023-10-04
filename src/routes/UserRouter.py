@@ -5,26 +5,26 @@ import uuid
 from models.entities.User import User
 
 # Models
-from models.PermissionModel import PermissionModel
+from models.UserModel import UserModel
 
-main = Blueprint("permission_blueprint", __name__)
+main = Blueprint("user_blueprint", __name__)
 
 
 @main.route("")
-def get_permissions():
+def get_users():
     try:
-        permissions = PermissionModel.get_permissions()
-        return jsonify(permissions)
+        users = UserModel.get_users()
+        return jsonify(users)
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
 
 @main.route("/<id>")
-def get_permission(id):
+def get_user(id):
     try:
-        permission = PermissionModel.get_permission(id)
-        if permission != None:
-            return jsonify(permission)
+        user = UserModel.get_user(id)
+        if user != None:
+            return jsonify(user)
         else:
             return jsonify({}), 404
     except Exception as ex:
@@ -37,9 +37,9 @@ def add_permission():
         permission = request.json["permission"]
         description = request.json["description"]
         id = uuid.uuid4()
-        newPermission = Permission(str(id), permission, description)
+        newPermission = User(str(id), permission, description)
 
-        affected_rows = PermissionModel.add_permission(newPermission)
+        affected_rows = UserModel.add_permission(newPermission)
 
         if affected_rows == 1:
             return jsonify(newPermission.id)
@@ -55,9 +55,9 @@ def update_permission(id):
     try:
         permission = request.json["permission"]
         description = request.json["description"]
-        permissionData = Permission(id, permission, description)
-     
-        affected_rows = PermissionModel.update_permission(permissionData)
+        permissionData = User(id, permission, description)
+
+        affected_rows = UserModel.update_permission(permissionData)
         print(affected_rows)
         if affected_rows == 1:
             return jsonify(permissionData.id)
@@ -71,9 +71,9 @@ def update_permission(id):
 @main.route("/delete/<id>", methods=["DELETE"])
 def delete_permission(id):
     try:
-        permission = Permission(id)
+        permission = User(id)
 
-        affected_rows = PermissionModel.delete_permission(permission)
+        affected_rows = UserModel.delete_permission(permission)
 
         if affected_rows == 1:
             return jsonify(permission.id)
