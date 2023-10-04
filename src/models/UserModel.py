@@ -115,7 +115,6 @@ class UserModel:
     def update_permission(self, permissionData):
         try:
             connection = get_connection()
-            print("entre permission")
             with connection.cursor() as cursor:
                 cursor.execute(
                     """UPDATE permissions SET permission = %s, description = %s 

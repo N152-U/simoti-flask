@@ -17,8 +17,8 @@ class PermissionModel:
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    movie = Permission(row[0], row[1], row[2])
-                    permissions.append(movie.to_JSON())
+                    permission = Permission(row[0], row[1], row[2])
+                    permissions.append(permission.to_JSON())
 
             connection.close()
             return permissions
