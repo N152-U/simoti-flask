@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import uuid
 
 # Entities
-from models.entities.User import User, AddUser
+from models.entities.User import User, AddUser, UpdateUser
 
 # Models
 from models.UserModel import UserModel
@@ -69,16 +69,23 @@ def get_user_update(id):
 
 
 @main.route("/update/<id>", methods=["PUT"])
-def update_permission(id):
+def update_user(id):
     try:
-        permission = request.json["permission"]
-        description = request.json["description"]
-        permissionData = User(id, permission, description)
+        role_id = request.json["role_id"]
+        username = request.json["username"]
+        first_name = request.json["first_name"]
+        middle_name = request.json["middle_name"]
+        last_name = request.json["last_name"]
+        password = request.json["password"]
 
-        affected_rows = UserModel.update_permission(permissionData)
-        print(affected_rows)
+        updateUser = UpdateUser(
+            str(id), username, first_name, middle_name, last_name, role_id, password
+        )
+
+        affected_rows = UserModel.update_user(updateUser)
+
         if affected_rows == 1:
-            return jsonify(permissionData.id)
+            return jsonify(updateUser.id)
         else:
             return jsonify({"message": "No user updated"}), 404
 

@@ -1,5 +1,5 @@
 from database.db import get_connection
-from .entities.User import User, UpdateUser
+from .entities.User import User, GetUpdateUser
 
 
 class UserModel:
@@ -76,7 +76,7 @@ class UserModel:
 
                 user = None
                 if row != None:
-                    user = UpdateUser(row[0], row[1], row[2], row[3], row[4], row[5])
+                    user = GetUpdateUser(row[0], row[1], row[2], row[3], row[4], row[5])
                     user = user.to_JSON()
 
             connection.close()
@@ -112,17 +112,22 @@ class UserModel:
             raise Exception(ex)
 
     @classmethod
-    def update_permission(self, permissionData):
+    def update_user(self, user):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """UPDATE permissions SET permission = %s, description = %s 
+                    """UPDATE users SET 
+                    role_id= %s, username= %s,first_name= %s,middle_name= %s,last_name= %s,password= %s
                                 WHERE id = %s""",
                     (
-                        permissionData.permission,
-                        permissionData.description,
-                        permissionData.id,
+                        user.role_id,
+                        user.username,
+                        user.first_name,
+                        user.middle_name,
+                        user.last_name,
+                        user.password,
+                        user.id,
                     ),
                 )
                 affected_rows = cursor.rowcount
