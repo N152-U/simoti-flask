@@ -56,6 +56,18 @@ def add_user():
         return jsonify({"message": str(ex)}), 500
 
 
+@main.route("/getUpdate/<id>")
+def get_user_update(id):
+    try:
+        user = UserModel.get_user_update(id)
+        if user != None:
+            return jsonify(user)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
 @main.route("/update/<id>", methods=["PUT"])
 def update_permission(id):
     try:

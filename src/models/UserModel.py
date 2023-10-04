@@ -1,5 +1,5 @@
 from database.db import get_connection
-from .entities.User import User
+from .entities.User import User,UpdateUser
 
 
 class UserModel:
@@ -58,6 +58,33 @@ class UserModel:
             raise Exception(ex)
 
     @classmethod
+    def get_user_update(self, id):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT u.id, u.username, u.first_name, u.middle_name, u.last_name, u.role_id, u.active
+                    FROM users u
+                    WHERE u.active = true
+                    AND u.id = '{0}'
+                    """.format(
+                        id
+                    )
+                )
+                row = cursor.fetchone()
+
+                user = None
+                if row != None:
+                    user = UpdateUser(row[0], row[1], row[2], row[3], row[4], row[5])
+                    user = user.to_JSON()
+
+            connection.close()
+            return user
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
     def add_user(self, user):
         try:
             connection = get_connection()
@@ -66,7 +93,15 @@ class UserModel:
                 cursor.execute(
                     """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password) 
                                 VALUES (%s, %s, %s,%s, %s, %s, %s)""",
-                    (user.id, user.role_id, user.username,user.first_name, user.middle_name, user.last_name, user.password),
+                    (
+                        user.id,
+                        user.role_id,
+                        user.username,
+                        user.first_name,
+                        user.middle_name,
+                        user.last_name,
+                        user.password,
+                    ),
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()
