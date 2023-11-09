@@ -2,7 +2,12 @@ from flask import Blueprint, jsonify, request
 import uuid
 
 # Entities
-from models.entities.Measurements import oxygenSaturation, heartRate, temperature
+from models.entities.Measurements import (
+    oxygenSaturation,
+    heartRate,
+    temperature,
+    FallDetector,
+)
 
 # Models
 from models.MeasurementModel import MeasurementModel
@@ -123,6 +128,48 @@ def get_measurements_temperature_add():
         temperatureData = temperature(value, patient_id)
         affected_rows = MeasurementModel.get_measurements_temperature_add(
             temperatureData
+        )
+
+        if affected_rows == 1:
+            return jsonify({"message": "Success"}), 201
+        else:
+            return jsonify({"message": "Error on insert"}), 500
+
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/fallDetector")
+def get_measurements_fall_detector():
+    try:
+        measurements_fall_detector = MeasurementModel.get_measurements_fall_detector()
+        return jsonify(measurements_fall_detector)
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/fallDetector/patient/<patient_id>")
+def get_measurements_fall_detector_by_patient(patient_id):
+    try:
+        measurements_fall_detector = (
+            MeasurementModel.get_measurements_fall_detector_by_patient(patient_id)
+        )
+        if measurements_fall_detector != None:
+            return jsonify(measurements_fall_detector)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/fallDetector/add", methods=["POST"])
+def get_measurements_fall_detector_add():
+    try:
+        description = request.json["description"]
+        patient_id = request.json["patient_id"]
+        fallDetectorData = FallDetector(description, patient_id)
+        affected_rows = MeasurementModel.get_measurements_fall_detector_add(
+            fallDetectorData
         )
 
         if affected_rows == 1:
