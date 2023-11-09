@@ -54,7 +54,7 @@ class heartRate:
     def to_JSON(self):
         return {
             "value": self.value,
-            "active": self.patient_id,
+            "patient_id": self.patient_id,
         }
 
 
@@ -84,5 +84,35 @@ class temperature:
     def to_JSON(self):
         return {
             "value": self.value,
-            "active": self.patient_id,
+            "patient_id": self.patient_id,
+        }
+
+
+class MeasurementsFallDetector:
+    def __init__(
+        self, id=None, description=None, active: bool = None, created_at=None
+    ) -> None:
+        self.id = id
+        self.description = description
+        self.active = active
+        self.created_at = created_at
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "description": self.description,
+            "active": self.active,
+            "created_at": self.created_at,
+        }
+
+
+class FallDetector:
+    def __init__(self, description=None, patient_id=None) -> None:
+        self.description = description
+        self.patient_id = patient_id
+
+    def to_JSON(self):
+        return {
+            "description": self.description,
+            "patient_id": self.patient_id,
         }
