@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import uuid
 
 # Entities
-from models.entities.Measurements import oxygenSaturation,heartRate
+from models.entities.Measurements import oxygenSaturation, heartRate, temperature
 
 # Models
 from models.MeasurementModel import MeasurementModel
@@ -55,9 +55,7 @@ def get_measurements_oxygen_saturation_add():
 @main.route("/heartRate")
 def get_measurements_heart_rate():
     try:
-        measurements_heart_rate = (
-            MeasurementModel.get_measurements_heart_rate()
-        )
+        measurements_heart_rate = MeasurementModel.get_measurements_heart_rate()
         return jsonify(measurements_heart_rate)
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
@@ -84,6 +82,48 @@ def get_measurements_heart_rate_add():
         patient_id = request.json["patient_id"]
         rate = heartRate(value, patient_id)
         affected_rows = MeasurementModel.get_measurements_heart_rate_add(rate)
+
+        if affected_rows == 1:
+            return jsonify({"message": "Success"}), 201
+        else:
+            return jsonify({"message": "Error on insert"}), 500
+
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/temperature")
+def get_measurements_temperature():
+    try:
+        measurements_temperature = MeasurementModel.get_measurements_temperature()
+        return jsonify(measurements_temperature)
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/temperature/patient/<patient_id>")
+def get_measurements_temperature_by_patient(patient_id):
+    try:
+        measurements_temperature = (
+            MeasurementModel.get_measurements_temperature_by_patient(patient_id)
+        )
+        if measurements_temperature != None:
+            return jsonify(measurements_temperature)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/temperature/add", methods=["POST"])
+def get_measurements_temperature_add():
+    try:
+        value = request.json["value"]
+        patient_id = request.json["patient_id"]
+        temperatureData = temperature(value, patient_id)
+        affected_rows = MeasurementModel.get_measurements_temperature_add(
+            temperatureData
+        )
 
         if affected_rows == 1:
             return jsonify({"message": "Success"}), 201
