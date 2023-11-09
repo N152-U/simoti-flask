@@ -50,3 +50,20 @@ class MeasurementModel:
             return measurements
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def get_measurements_oxygen_saturation_add(self,oxygen):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """INSERT INTO oxygen_saturation (value,patient_id)
+                                VALUES (%s,%s)""",(oxygen.value,oxygen.patient_id )    
+                )
+                affected_rows = cursor.rowcount
+                connection.commit()
+            connection.close()
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)

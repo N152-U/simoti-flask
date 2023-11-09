@@ -14,3 +14,15 @@ class MeasurementsOxygenSaturation:
             "active": self.active,
             "created_at": self.created_at,
         }
+
+
+class oxygenSaturation:
+    def __init__(self, value=None, patient_id=None) -> None:
+        self.value = value
+        self.patient_id = patient_id
+
+    def to_JSON(self):
+        return {
+            "value": self.value,
+            "active": self.patient_id,
+        }
