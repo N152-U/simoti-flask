@@ -92,15 +92,15 @@ class PermissionModel:
     @classmethod
     def delete_permission(self, permission):
         try:
+            """ note: foreign key """
             connection = get_connection()
-
+            print("permission.id", type(permission.id))
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM permissions WHERE id = %s", (permission.id,)
-                )
+                    "DELETE FROM permissions WHERE id = %(id)s",{'id': permission.id})
+                
                 affected_rows = cursor.rowcount
                 connection.commit()
-
             connection.close()
             return affected_rows
         except Exception as ex:
