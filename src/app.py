@@ -4,7 +4,7 @@ from flask_cors import CORS, cross_origin
 from config import config
 
 # Routes
-from routes import PermissionRouter, RoleRouter, UserRouter
+from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter
 
 app = Flask(__name__)
 
@@ -22,6 +22,7 @@ if __name__ == "__main__":
     app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
     app.register_blueprint(RoleRouter.main, url_prefix="/simoti/api/v1/roles")
     app.register_blueprint(UserRouter.main, url_prefix="/simoti/api/v1/users")
+    app.register_blueprint(MeasurementRouter.main, url_prefix="/simoti/api/v1/measurements")
 
     # Error handlers
     app.register_error_handler(404, page_not_found)

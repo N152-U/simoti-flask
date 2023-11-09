@@ -1,5 +1,5 @@
 class RoleAll:
-    def __init__(self, id=None, role=None, permissions=None, active=True) -> None:
+    def __init__(self, id=None, role=None, active:bool=None) -> None:
         self.id = id
         self.role = role
         self.active = active

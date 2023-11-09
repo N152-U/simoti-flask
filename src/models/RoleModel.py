@@ -12,7 +12,7 @@ class RoleModel:
             roles = []
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id, role,active FROM roles ORDER BY role ASC")
+                cursor.execute("SELECT id, role,active FROM roles WHERE active= true ORDER BY role ASC")
                 resultset = cursor.fetchall()
 
                 for row in resultset:
@@ -172,6 +172,14 @@ class RoleModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
+                     "UPDATE roles SET active=false WHERE id = '{0}'".format(role.id)
+                )
+                affected_rows = cursor.rowcount
+                connection.commit()
+            connection.close()
+            
+            """ with connection.cursor() as cursor:
+                cursor.execute(
                     "DELETE FROM role_has_permissions WHERE role_id = '{0}'", (role.id)
                 )
                 affected_rows = cursor.rowcount
@@ -182,7 +190,7 @@ class RoleModel:
                 cursor.execute("DELETE FROM roles WHERE id = '{0}'".format(role.id))
                 affected_rows = cursor.rowcount
                 connection2.commit()
-            connection2.close()
+            connection2.close() """
             
             return affected_rows
         except Exception as ex:
