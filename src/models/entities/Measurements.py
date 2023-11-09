@@ -24,7 +24,7 @@ class oxygenSaturation:
     def to_JSON(self):
         return {
             "value": self.value,
-            "active": self.patient_id,
+            "patient_id": self.patient_id,
         }
 
 
