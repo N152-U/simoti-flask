@@ -111,22 +111,36 @@ def delete_user(id):
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
+
 @main.route("/login", methods=["POST"])
 def login():
-     try:
-        username = request.json['username']
-        password = request.json['password']
+    try:
+        username = request.json["username"]
+        password = request.json["password"]
         print(request)
         user = UserValidation(username, password)
 
         authenticated_user = UserModel.login_user(user)
 
-        if (authenticated_user != None):
+        if authenticated_user != None:
             encoded_token = Security.generate_token(authenticated_user)
-            return jsonify({'message': 'Log in', 'payload': encoded_token})
+            return jsonify({"message": "Log in", "payload": encoded_token})
         else:
-            response = jsonify({'message': 'Credenciales Inválidas'})
+            response = jsonify({"message": "Credenciales Inválidas"})
             return response, 401
-        
-     except Exception as ex:
+
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+
+@main.route("/<username>/permissions")
+def get_user_permissions(username):
+    try:
+        permissions = UserModel.get_user_permissions(username)
+        role = UserModel.get_user_role(username)
+        if role != None:
+            return jsonify({"payload": {"role":role[0],"permissions":permissions}})
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
         return jsonify({"message": str(ex)}), 500

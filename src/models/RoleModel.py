@@ -118,7 +118,7 @@ class RoleModel:
             
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM role_has_permissions WHERE role_id = '5b1f90fd-2e32-428a-aba0-8cf0157f5bdf'"
+                    "DELETE FROM role_has_permissions WHERE role_id = '{0}'".format(roleData.id)
                 )
                 affected_rows = cursor.rowcount
                 connection.commit()

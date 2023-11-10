@@ -15,3 +15,9 @@ class Permission:
             "description": self.description,
             "active": self.active,
         }
+class PermissionList:
+    def __init__(self, permission=None) -> None:
+        self.permission = permission
+    def to_JSON(self):
+        return self.permission
+

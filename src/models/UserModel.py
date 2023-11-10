@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.User import User, GetUpdateUser, UserConfirmation
+from .entities.Permission import PermissionList
 
 
 class UserModel:
@@ -177,5 +178,52 @@ class UserModel:
                     )
             connection.close()
             return authenticated_user
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def get_user_permissions(self, username):
+        try:
+            connection = get_connection()
+            permissions = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                  """SELECT p.permission
+                        FROM users u
+                        INNER JOIN role_has_permissions rp ON rp.role_id = u.role_id
+                        INNER JOIN permissions p ON p.id = rp.permission_id
+                        WHERE 
+                        u.username = '{0}'""".format(username)
+                )
+
+                resultset = cursor.fetchall()
+
+                for row in resultset:
+                    user = PermissionList(row[0])
+                    permissions.append(user.to_JSON())
+
+            connection.close()
+            return permissions
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def get_user_role(self, username):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.execute(
+                  """SELECT r.role
+                        FROM users u
+                        INNER JOIN roles r ON r.id = u.role_id
+                        WHERE 
+                        u.username = '{0}'""".format(username)
+                )
+
+                row = cursor.fetchone()
+
+            connection.close()
+            return row
         except Exception as ex:
             raise Exception(ex)
