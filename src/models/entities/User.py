@@ -81,3 +81,14 @@ class UpdateUser:
             "role_id": self.role_id,
             "password": self.password,
         }
+
+class UserValidation:
+    def __init__(self, username=None, password=None) -> None:
+        self.username = username
+        self.password = password
+
+    def to_JSON(self):
+        return {
+            "username": self.username,
+            "firstName": self.password
+        }

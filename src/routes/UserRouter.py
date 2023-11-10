@@ -2,7 +2,10 @@ from flask import Blueprint, jsonify, request
 import uuid
 
 # Entities
-from models.entities.User import User, AddUser, UpdateUser
+from models.entities.User import User, AddUser, UpdateUser, UserValidation
+
+# Security
+from utils.Security import Security
 
 # Models
 from models.UserModel import UserModel
@@ -106,4 +109,24 @@ def delete_user(id):
             return jsonify({"message": "No user deleted"}), 404
 
     except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+
+@main.route("/login", methods=["POST"])
+def login():
+     try:
+        username = request.json['username']
+        password = request.json['password']
+        print(request)
+        user = UserValidation(username, password)
+
+        authenticated_user = UserModel.login_user(user)
+
+        if (authenticated_user != None):
+            encoded_token = Security.generate_token(authenticated_user)
+            return jsonify({'message': 'Log in', 'payload': encoded_token})
+        else:
+            response = jsonify({'message': 'Unauthorized'})
+            return response, 401
+        
+     except Exception as ex:
         return jsonify({"message": str(ex)}), 500

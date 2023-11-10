@@ -154,3 +154,22 @@ class UserModel:
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
+
+    @classmethod
+    def login_user(cls, user):
+        try:
+            connection = get_connection()
+            authenticated_user = None
+            with connection.cursor() as cursor:
+                cursor.execute(""" SELECT users.id, users.username
+	                            FROM users
+                                WHERE 
+                                users.username = %s 
+	                            AND users.password = %s""", (user.username, user.password))
+                row = cursor.fetchone()
+                if row != None:
+                    authenticated_user = User(row[0], row[1])
+            connection.close()
+            return authenticated_user
+        except Exception as ex:
+            raise Exception(ex)
