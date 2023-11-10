@@ -125,7 +125,7 @@ def login():
             encoded_token = Security.generate_token(authenticated_user)
             return jsonify({'message': 'Log in', 'payload': encoded_token})
         else:
-            response = jsonify({'message': 'Unauthorized'})
+            response = jsonify({'message': 'Credenciales Inválidas'})
             return response, 401
         
      except Exception as ex:
