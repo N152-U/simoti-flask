@@ -1,3 +1,5 @@
+from werkzeug.security import check_password_hash as checkph
+
 from database.db import get_connection
 from .entities.User import User, GetUpdateUser, UserConfirmation
 from .entities.Permission import PermissionList
@@ -163,19 +165,20 @@ class UserModel:
             authenticated_user = None
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """ SELECT u.id, u.username,u.first_name,u.middle_name,u.last_name,u.role_id,r.role
+                    """ SELECT u.id, u.username,u.first_name,u.middle_name,u.last_name,u.role_id,r.role,u.password
 	                            FROM users u
                                 INNER JOIN roles r ON r.id = u.role_id
                                 WHERE 
-                                u.username = %s 
-	                            AND u.password = %s""",
-                    (user.username, user.password),
+                                u.username = '{0}'""".format(user.username)
                 )
                 row = cursor.fetchone()
                 if row != None:
-                    authenticated_user = UserConfirmation(
-                        row[0], row[1], row[2], row[3], row[4], row[5], row[6]
-                    )
+                    if(checkph(row[7],user.password) == True):
+                        authenticated_user = UserConfirmation(
+                            row[0], row[1], row[2], row[3], row[4], row[5], row[6]
+                        )
+                    else:
+                        authenticated_user = None
             connection.close()
             return authenticated_user
         except Exception as ex:

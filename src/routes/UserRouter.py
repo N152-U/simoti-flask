@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 import uuid
-
+from werkzeug.security import generate_password_hash as genph
 # Entities
 from models.entities.User import User, AddUser, UpdateUser, UserValidation
 
@@ -53,6 +53,7 @@ def add_user():
             middle_name = request.json["middle_name"]
             last_name = request.json["last_name"]
             password = request.json["password"]
+            password = genph(password)
             id = uuid.uuid4()
             newUser = AddUser(
                 str(id), username, first_name, middle_name, last_name, role_id, password
@@ -98,6 +99,7 @@ def update_user(id):
             middle_name = request.json["middle_name"]
             last_name = request.json["last_name"]
             password = request.json["password"]
+            password = genph(password)
 
             updateUser = UpdateUser(
                 str(id), username, first_name, middle_name, last_name, role_id, password
