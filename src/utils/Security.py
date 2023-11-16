@@ -12,7 +12,7 @@ class Security:
     def generate_token(cls, authenticated_user):
         payload = {
             "iat": datetime.datetime.now(tz=cls.tz),
-            "exp": datetime.datetime.now(tz=cls.tz) + datetime.timedelta(minutes=30),
+            "exp": datetime.datetime.now(tz=cls.tz) + datetime.timedelta(minutes=60),
             "username": authenticated_user.username,
             "firstName": authenticated_user.first_name,
             "middleName": authenticated_user.middle_name,
