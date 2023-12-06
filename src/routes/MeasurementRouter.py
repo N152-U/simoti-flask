@@ -31,7 +31,7 @@ def get_measurements_oxygen_saturation():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
 
 
@@ -41,7 +41,9 @@ def get_measurements_oxygen_saturation_by_patient(patient_id):
     if has_access:
         try:
             measurements_oxygen_saturation = (
-                MeasurementModel.get_measurements_oxygen_saturation_by_patient(patient_id)
+                MeasurementModel.get_measurements_oxygen_saturation_by_patient(
+                    patient_id
+                )
             )
             if measurements_oxygen_saturation != None:
                 return jsonify(measurements_oxygen_saturation)
@@ -50,7 +52,7 @@ def get_measurements_oxygen_saturation_by_patient(patient_id):
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
 
 
@@ -62,7 +64,9 @@ def get_measurements_oxygen_saturation_add():
             value = request.json["value"]
             patient_id = request.json["patient_id"]
             oxygen = oxygenSaturation(value, patient_id)
-            affected_rows = MeasurementModel.get_measurements_oxygen_saturation_add(oxygen)
+            affected_rows = MeasurementModel.get_measurements_oxygen_saturation_add(
+                oxygen
+            )
 
             if affected_rows == 1:
                 return jsonify({"message": "Success"}), 201
@@ -72,8 +76,9 @@ def get_measurements_oxygen_saturation_add():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/heartRate")
 def get_measurements_heart_rate():
@@ -85,8 +90,9 @@ def get_measurements_heart_rate():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/heartRate/patient/<patient_id>")
 def get_measurements_heart_rate_by_patient(patient_id):
@@ -103,8 +109,9 @@ def get_measurements_heart_rate_by_patient(patient_id):
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
@@ -124,8 +131,9 @@ def get_measurements_heart_rate_add():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/temperature")
 def get_measurements_temperature():
@@ -137,8 +145,9 @@ def get_measurements_temperature():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/temperature/patient/<patient_id>")
 def get_measurements_temperature_by_patient(patient_id):
@@ -155,8 +164,9 @@ def get_measurements_temperature_by_patient(patient_id):
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/temperature/add", methods=["POST"])
 def get_measurements_temperature_add():
@@ -178,21 +188,25 @@ def get_measurements_temperature_add():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/fallDetector")
 def get_measurements_fall_detector():
     has_access = Security.verify_token(request.headers)
     if has_access:
         try:
-            measurements_fall_detector = MeasurementModel.get_measurements_fall_detector()
+            measurements_fall_detector = (
+                MeasurementModel.get_measurements_fall_detector()
+            )
             return jsonify(measurements_fall_detector)
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/fallDetector/patient/<patient_id>")
 def get_measurements_fall_detector_by_patient(patient_id):
@@ -209,8 +223,9 @@ def get_measurements_fall_detector_by_patient(patient_id):
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 @main.route("/fallDetector/add", methods=["POST"])
 def get_measurements_fall_detector_add():
@@ -232,5 +247,24 @@ def get_measurements_fall_detector_add():
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:
-        response = jsonify({'message': 'Unauthorized'})
+        response = jsonify({"message": "Unauthorized"})
+        return response, 401
+
+
+@main.route("/location/<startDate>/<finalDate>")
+def get_locations_by_date(startDate,finalDate):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            locations = (
+                MeasurementModel.get_locations_by_date(startDate,finalDate)
+            )
+            if locations != None:
+                return jsonify(locations)
+            else:
+                return jsonify({}), 404
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({"message": "Unauthorized"})
         return response, 401

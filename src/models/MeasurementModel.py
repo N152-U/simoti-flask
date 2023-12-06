@@ -4,7 +4,8 @@ from .entities.Measurements import (
     MeasurementsOxygenSaturation,
     MeasurementsHeartRate,
     MeasurementsTemperature,
-    MeasurementsFallDetector
+    MeasurementsFallDetector,
+    Location
 )
 from datetime import datetime
 
@@ -267,5 +268,29 @@ class MeasurementModel:
                 connection.commit()
             connection.close()
             return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def get_locations_by_date(self, startDate, finalDate):
+        try:
+            connection = get_connection()
+            measurements = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT patient_id,latitude,longitude,(EXTRACT (epoch FROM max(created_at)) *1000)+21600000 AS time FROM location WHERE active=true AND created_at BETWEEN '{0} 00:00:00' AND '{1} 23:59:59' GROUP BY 1,2,3,created_at".format(
+                        startDate,finalDate
+                    )
+                )
+                resultset = cursor.fetchall()
+                for row in resultset:
+                    measurement = Location(
+                        row[0], row[1], row[2], row[3]
+                    )
+                    measurements.append(measurement.to_JSON())
+
+            connection.close()
+            return measurements
         except Exception as ex:
             raise Exception(ex)

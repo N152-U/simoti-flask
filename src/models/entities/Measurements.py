@@ -116,3 +116,21 @@ class FallDetector:
             "description": self.description,
             "patient_id": self.patient_id,
         }
+
+
+class Location:
+    def __init__(
+        self, patient_id=None, latitude=None, longitude=None, time=None
+    ) -> None:
+        self.patient_id = patient_id
+        self.latitude = latitude
+        self.longitude = longitude
+        self.time = time
+
+    def to_JSON(self):
+        return {
+            "patient_id": self.patient_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "time": self.time,
+        }
