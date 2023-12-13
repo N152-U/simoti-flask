@@ -252,19 +252,17 @@ def get_measurements_fall_detector_add():
 
 
 @main.route("/location/<startDate>/<finalDate>")
-def get_locations_by_date(startDate,finalDate):
+def get_locations_by_date(startDate, finalDate):
     has_access = Security.verify_token(request.headers)
-    if has_access:
-        try:
-            locations = (
-                MeasurementModel.get_locations_by_date(startDate,finalDate)
-            )
-            if locations != None:
-                return jsonify(locations)
-            else:
-                return jsonify({}), 404
-        except Exception as ex:
-            return jsonify({"message": str(ex)}), 500
-    else:
-        response = jsonify({"message": "Unauthorized"})
-        return response, 401
+    # if has_access:
+    try:
+        locations = MeasurementModel.get_locations_by_date(startDate, finalDate)
+        if locations != None:
+            return jsonify({"features": locations, "type": "FeatureCollection"})
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+    # else:
+    #   response = jsonify({"message": "Unauthorized"})
+    # return response, 401

@@ -129,8 +129,16 @@ class Location:
 
     def to_JSON(self):
         return {
-            "patient_id": self.patient_id,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "time": self.time,
+            "geometry": {
+                "coordinates": [float(self.longitude), float(self.latitude)],
+                "type": "Point",
+            },
+            "properties": {
+                "patient_name": "Andrea Naraly",
+                "created_at": "2023-12-13 13:50:00",
+                "place": "AV. LA PALMA , Loma La Palma, 7160, GUSTAVO A. MADERO",
+                "time": int(self.time),
+                "patient_id": self.patient_id,
+            },
+            "type": "Feature",
         }
