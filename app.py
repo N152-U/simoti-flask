@@ -15,7 +15,7 @@ def page_not_found(error):
     return "<h1>Bienvenido a la API de SIMOTI</h1>", 404
 
 
-if __name__ == "__main__":
+if __name__ == "app":
     app.config.from_object(config["development"])
 
     # Blueprints
