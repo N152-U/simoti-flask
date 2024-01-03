@@ -29,4 +29,6 @@ if __name__ == "__main__":
     app.register_error_handler(404, page_not_found)
     app.run()
 else:
-    print("No entro a nada")
+     # Error handlers
+    app.register_error_handler(404, page_not_found)
+    app.run()
