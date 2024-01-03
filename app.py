@@ -16,7 +16,7 @@ def page_not_found(error):
 
 
 if __name__ == "app":
-    app.config.from_object(config["development"])
+    app.config.from_object(config["production"])
 
     # Blueprints
     app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
@@ -27,9 +27,9 @@ if __name__ == "app":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    app.run()
+    app.run(port=5001)
 elif __name__ == "__main__":
-    app.config.from_object(config["development"])
+    app.config.from_object(config["production"])
 
     # Blueprints
     app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
@@ -40,4 +40,4 @@ elif __name__ == "__main__":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    app.run()
+    app.run(port=5002)
