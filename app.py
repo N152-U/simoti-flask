@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS, cross_origin
-
+from waitress import serve
 from config import config
 
 # Routes
@@ -27,7 +27,8 @@ if __name__ == "app":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    app.run(port=5001)
+    serve(app, host="0.0.0.0", port=5005)
+    #app.run(port=5001)
 elif __name__ == "__main__":
     app.config.from_object(config["production"])
 
