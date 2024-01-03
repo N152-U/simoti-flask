@@ -28,5 +28,16 @@ if __name__ == "app":
     # Error handlers
     app.register_error_handler(404, page_not_found)
     app.run()
-else:
-    print("No entro a nada name",__name__)
+elif __name__ == "__main__":
+    app.config.from_object(config["development"])
+
+    # Blueprints
+    app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
+    app.register_blueprint(RoleRouter.main, url_prefix="/simoti/api/v1/roles")
+    app.register_blueprint(UserRouter.main, url_prefix="/simoti/api/v1/users")
+    app.register_blueprint(MeasurementRouter.main, url_prefix="/simoti/api/v1/measurements")
+    app.register_blueprint(CatalogRouter.main, url_prefix="/simoti/api/v1/catalog")
+
+    # Error handlers
+    app.register_error_handler(404, page_not_found)
+    app.run()
