@@ -8,7 +8,7 @@ from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, 
 
 app = Flask(__name__)
 
-CORS(app, resources={"*": {"origins": "http://localhost:8843"}})
+CORS(app, resources={"*": {"origins": "*"}})
 
 
 def page_not_found(error):
