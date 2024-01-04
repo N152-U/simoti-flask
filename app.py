@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from waitress import serve
 from config import config
 
+
 # Routes
 from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, CatalogRouter
 
@@ -27,6 +28,7 @@ if __name__ == "app":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
+    from decouple import config
     app.run(port=config("PORT") or 4200)
     #app.run(port=5001)
 """ elif __name__ == "__main__":
