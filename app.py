@@ -29,7 +29,7 @@ if __name__ == "app":
     app.register_error_handler(404, page_not_found)
     serve(app, port=5005)
     #app.run(port=5001)
-elif __name__ == "__main__":
+""" elif __name__ == "__main__":
     app.config.from_object(config["production"])
 
     # Blueprints
@@ -41,4 +41,4 @@ elif __name__ == "__main__":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    app.run(port=5002)
+    app.run(port=5002) """
