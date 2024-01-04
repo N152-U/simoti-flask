@@ -27,7 +27,7 @@ if __name__ == "app":
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    serve(app, port=5005)
+    serve(app, port=8080)
     #app.run(port=5001)
 """ elif __name__ == "__main__":
     app.config.from_object(config["production"])
