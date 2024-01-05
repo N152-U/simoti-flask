@@ -29,3 +29,16 @@ class MunicipalityEdomexShape:
             "properties": {"name": self.name, "ObjectID": self.ogc_fid},
             "type": "Feature",
         }
+
+class TypesOfUsers:
+    def __init__(self, id=None, name=None, active: bool = None) -> None:
+        self.id = id
+        self.name = name
+        self.active = active
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "active": self.active
+        }

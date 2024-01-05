@@ -1,5 +1,5 @@
 from database.db import get_connection
-from .entities.Catalog import MunicipalityShape, MunicipalityEdomexShape
+from .entities.Catalog import MunicipalityShape, MunicipalityEdomexShape, TypesOfUsers
 
 
 class CatalogModel:
@@ -23,7 +23,7 @@ class CatalogModel:
             return measurements
         except Exception as ex:
             raise Exception(ex)
-        
+
     @classmethod
     def get_municipalities_edomex_shape(self):
         try:
@@ -38,6 +38,27 @@ class CatalogModel:
 
                 for row in resultset:
                     measurement = MunicipalityEdomexShape(row[0], row[1], row[2])
+                    measurements.append(measurement.to_JSON())
+
+            connection.close()
+            return measurements
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def get_types_users(self):
+        try:
+            connection = get_connection()
+            measurements = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id,name,active FROM types_of_users WHERE active= true ORDER BY id asc"
+                )
+                resultset = cursor.fetchall()
+
+                for row in resultset:
+                    measurement = TypesOfUsers(row[0], row[1], row[2])
                     measurements.append(measurement.to_JSON())
 
             connection.close()
