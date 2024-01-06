@@ -116,6 +116,8 @@ def get_measurements_heart_rate_by_patient(patient_id):
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
     try:
+        print('ENtro al controlador');
+        print('data',request);
         print('request',request.json["value"],request.json["patient_id"])
         value = request.json["value"]
         patient_id = request.json["patient_id"]
