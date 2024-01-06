@@ -115,24 +115,22 @@ def get_measurements_heart_rate_by_patient(patient_id):
 
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
-    has_access = Security.verify_token(request.headers)
-    if has_access:
-        try:
-            value = request.json["value"]
-            patient_id = request.json["patient_id"]
-            rate = heartRate(value, patient_id)
-            affected_rows = MeasurementModel.get_measurements_heart_rate_add(rate)
+    try:
+        value = request.json["value"]
+        patient_id = request.json["patient_id"]
+        rate = heartRate(value, patient_id)
+        affected_rows = MeasurementModel.get_measurements_heart_rate_add(rate)
 
-            if affected_rows == 1:
-                return jsonify({"message": "Success"}), 201
-            else:
-                return jsonify({"message": "Error on insert"}), 500
+        if affected_rows == 1:
+            return jsonify({"message": "Success"}), 201
+        else:
+            return jsonify({"message": "Error on insert"}), 500
 
-        except Exception as ex:
-            return jsonify({"message": str(ex)}), 500
-    else:
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+'''     else:
         response = jsonify({"message": "Unauthorized"})
-        return response, 401
+        return response, 401 '''
 
 
 @main.route("/temperature")
