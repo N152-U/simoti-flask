@@ -116,6 +116,7 @@ def get_measurements_heart_rate_by_patient(patient_id):
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
     try:
+        print('request',request)
         value = request.json["value"]
         patient_id = request.json["patient_id"]
         rate = heartRate(value, patient_id)
