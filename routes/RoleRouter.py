@@ -15,16 +15,16 @@ main = Blueprint("role_blueprint", __name__)
 
 @main.route("")
 def get_roles():
-    has_access = Security.verify_token(request.headers)
-    if has_access:
+    #has_access = Security.verify_token(request.headers)
+    #if has_access:
         try:
             roles = RoleModel.get_roles()
             return jsonify(roles)
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
-    else:
-        response = jsonify({'message': 'Unauthorized'})
-        return response, 401
+    #else:
+    #    response = jsonify({'message': 'Unauthorized'})
+    #    return response, 401
 
 @main.route("/<id>")
 def get_role(id):
