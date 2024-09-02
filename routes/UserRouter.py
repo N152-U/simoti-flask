@@ -44,8 +44,8 @@ def get_user(id):
 
 @main.route("/add", methods=["POST"])
 def add_user():
-    has_access = Security.verify_token(request.headers)
-    if has_access:
+    #has_access = Security.verify_token(request.headers)
+    #if has_access:
         try:
             role_id = request.json["role_id"]
             username = request.json["username"]
@@ -68,9 +68,9 @@ def add_user():
 
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
-    else:
-        response = jsonify({'message': 'Unauthorized'})
-        return response, 401
+    #else:
+    #    response = jsonify({'message': 'Unauthorized'})
+    #    return response, 401
 
 @main.route("/getUpdate/<id>")
 def get_user_update(id):
