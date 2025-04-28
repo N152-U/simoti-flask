@@ -94,8 +94,8 @@ class UserModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password) 
-                                VALUES (%s, %s, %s,%s, %s, %s, %s)""",
+                    """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password, email) 
+                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s)""",
                     (
                         user.id,
                         user.role_id,
@@ -104,6 +104,7 @@ class UserModel:
                         user.middle_name,
                         user.last_name,
                         user.password,
+                        user.email,
                     ),
                 )
                 affected_rows = cursor.rowcount

@@ -53,10 +53,11 @@ def add_user():
             middle_name = request.json["middle_name"]
             last_name = request.json["last_name"]
             password = request.json["password"]
+            email = request.json["email"]
             password = genph(password)
             id = uuid.uuid4()
             newUser = AddUser(
-                str(id), username, first_name, middle_name, last_name, role_id, password
+                str(id), username, first_name, middle_name, last_name, role_id, password, email
             )
 
             affected_rows = UserModel.add_user(newUser)
