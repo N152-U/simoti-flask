@@ -15,16 +15,17 @@ main = Blueprint("user_blueprint", __name__)
 
 @main.route("")
 def get_users():
-    #has_access = Security.verify_token(request.headers)
-    #if has_access:
+    has_access = Security.verify_token(request.headers)
+    if has_access:
         try:
             users = UserModel.get_users()
             return jsonify(users)
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
-    #else:
-    #    response = jsonify({'message': 'Unauthorized'})
-    #    return response, 401
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
+
 
 @main.route("/<id>")
 def get_user(id):
@@ -44,8 +45,8 @@ def get_user(id):
 
 @main.route("/add", methods=["POST"])
 def add_user():
-    #has_access = Security.verify_token(request.headers)
-    #if has_access:
+    has_access = Security.verify_token(request.headers)
+    if has_access:
         try:
             role_id = request.json["role_id"]
             username = request.json["username"]
@@ -54,11 +55,15 @@ def add_user():
             last_name = request.json["last_name"]
             password = request.json["password"]
             email = request.json["email"]
+            relationship_id = request.json["relationship_id"]
+            specialty = request.json["specialty"]
             password = genph(password)
             id = uuid.uuid4()
             newUser = AddUser(
-                str(id), username, first_name, middle_name, last_name, role_id, password, email
+                str(id), username, first_name, middle_name, last_name, role_id, password, email,relationship_id,specialty
             )
+
+            print("newUser",newUser)
 
             affected_rows = UserModel.add_user(newUser)
 
@@ -69,9 +74,9 @@ def add_user():
 
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
-    #else:
-    #    response = jsonify({'message': 'Unauthorized'})
-    #    return response, 401
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
 
 @main.route("/getUpdate/<id>")
 def get_user_update(id):
@@ -133,6 +138,22 @@ def delete_user(id):
             else:
                 return jsonify({"message": "No user deleted"}), 404
 
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
+
+@main.route("/type/<id>")
+def get_user_type(id):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            user = UserModel.get_user_type(id)
+            if user != None:
+                return jsonify(user)
+            else:
+                return jsonify({}), 404
         except Exception as ex:
             return jsonify({"message": str(ex)}), 500
     else:

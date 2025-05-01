@@ -21,8 +21,24 @@ class User:
             "roleName": self.role,
             "active": self.active,
         }
+
+class UserType:
+    def __init__(self, id, full_name=None, role=None, active=True) -> None:
+        self.id = id
+        self.full_name = full_name
+        self.role = role
+        self.active = active
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "full_name": self.full_name,
+            "roleName": self.role,
+            "active": self.active,
+        }
+
 class AddUser:
-    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role_id=None, password=None, email=None) -> None:
+    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role_id=None, password=None, email=None, relationship_id=None, specialty=None) -> None:
         self.id = id
         self.username = username
         self.first_name = first_name
@@ -31,6 +47,8 @@ class AddUser:
         self.role_id = role_id
         self.password = password
         self.email = email
+        self.relationship_id = relationship_id
+        self.specialty = specialty
 
     def to_JSON(self):
         return {
@@ -42,6 +60,8 @@ class AddUser:
             "role_id": self.role_id,
             "password": self.password,
             "email": self.email,
+            "relationship_id": self.relationship_id,
+            "specialty": self.specialty,
         }
 
 class GetUpdateUser:

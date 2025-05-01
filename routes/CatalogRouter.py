@@ -7,6 +7,21 @@ from utils.Security import Security
 
 main = Blueprint("catalog_blueprint", __name__)
 
+@main.route("/relationships")
+def get_relationships():
+    print("hola")
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            relationships = (
+                CatalogModel.get_relationships()
+            )
+            return jsonify(relationships)
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
 
 @main.route("/municipalities/shapes")
 def get_municipalities_shape():

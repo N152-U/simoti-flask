@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash as checkph
 
 from database.db import get_connection
-from .entities.User import User, GetUpdateUser, UserConfirmation
+from .entities.User import User, UserType,GetUpdateUser, UserConfirmation
 from .entities.Permission import PermissionList
 
 
@@ -61,6 +61,36 @@ class UserModel:
             raise Exception(ex)
 
     @classmethod
+    def get_user_type(self, id):
+        try:
+            connection = get_connection()
+
+            users = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT u.id, CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) AS full_name, r.role, u.active
+                    FROM users u
+                    INNER JOIN roles r ON r.id = u.role_id
+                    WHERE u.active = true
+                    AND r.id = '{0}'
+                    """.format(
+                        id
+                    )
+                )
+                resultset = cursor.fetchall()
+
+            
+                for row in resultset:
+                    user = UserType(row[0], row[1], row[2], row[3])
+                    users.append(user.to_JSON())
+
+            connection.close()
+            return users
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
     def get_user_update(self, id):
         try:
             connection = get_connection()
@@ -94,8 +124,8 @@ class UserModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password, email) 
-                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s)""",
+                    """INSERT INTO users (id, role_id, username,first_name,middle_name,last_name,password, email,relationship_id,specialty) 
+                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s, %s,%s)""",
                     (
                         user.id,
                         user.role_id,
@@ -105,6 +135,8 @@ class UserModel:
                         user.last_name,
                         user.password,
                         user.email,
+                        user.relationship_id,
+                        user.specialty
                     ),
                 )
                 affected_rows = cursor.rowcount

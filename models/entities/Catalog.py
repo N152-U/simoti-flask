@@ -13,6 +13,18 @@ class MunicipalityShape:
             "geo_shape": self.geo_shape,
         }
 
+class Relationship:
+    def __init__(self, id=None, name=None, active: bool = None) -> None:
+        self.id = id
+        self.name = name
+        self.active = active
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "active": self.active
+        }
 
 class MunicipalityEdomexShape:
     def __init__(self, ogc_fid=None, name=None, geo_shape=None) -> None:

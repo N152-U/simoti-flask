@@ -1,8 +1,30 @@
 from database.db import get_connection
-from .entities.Catalog import MunicipalityShape, MunicipalityEdomexShape, TypesOfUsers
+from .entities.Catalog import MunicipalityShape, MunicipalityEdomexShape, TypesOfUsers, Relationship
 
 
 class CatalogModel:
+
+    @classmethod
+    def get_relationships(self):
+        try:
+            connection = get_connection()
+            relationships = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id,name, active FROM relationships WHERE active= true ORDER BY id asc"
+                )
+                resultset = cursor.fetchall()
+
+                for row in resultset:
+                    relationship = Relationship(row[0], row[1], row[2])
+                    relationships.append(relationship.to_JSON())
+
+            connection.close()
+            return relationships
+        except Exception as ex:
+            raise Exception(ex)
+
     @classmethod
     def get_municipalities_shape(self):
         try:
