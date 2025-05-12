@@ -5,9 +5,10 @@ from config import config
 
 
 # Routes
-from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, CatalogRouter
+from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, CatalogRouter, PatientRouter
 
 app = Flask(__name__)
+
 
 CORS(app, resources={"*": {"origins": "*"}})
 
@@ -23,6 +24,7 @@ if __name__ == "app":
     app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
     app.register_blueprint(RoleRouter.main, url_prefix="/simoti/api/v1/roles")
     app.register_blueprint(UserRouter.main, url_prefix="/simoti/api/v1/users")
+    app.register_blueprint(PatientRouter.main, url_prefix="/simoti/api/v1/patients")
     app.register_blueprint(MeasurementRouter.main, url_prefix="/simoti/api/v1/measurements")
     app.register_blueprint(CatalogRouter.main, url_prefix="/simoti/api/v1/catalog")
 
@@ -38,9 +40,10 @@ elif __name__ == "__main__":
     app.register_blueprint(PermissionRouter.main, url_prefix="/simoti/api/v1/permissions")
     app.register_blueprint(RoleRouter.main, url_prefix="/simoti/api/v1/roles")
     app.register_blueprint(UserRouter.main, url_prefix="/simoti/api/v1/users")
+    app.register_blueprint(PatientRouter.main, url_prefix="/simoti/api/v1/patients")
     app.register_blueprint(MeasurementRouter.main, url_prefix="/simoti/api/v1/measurements")
     app.register_blueprint(CatalogRouter.main, url_prefix="/simoti/api/v1/catalog")
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
-    app.run(port=5000)
+    app.run(debug=True, port=5000)
