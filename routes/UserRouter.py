@@ -63,8 +63,6 @@ def add_user():
                 str(id), username, first_name, middle_name, last_name, role_id, password, email,relationship_id,specialty
             )
 
-            print("newUser",newUser)
-
             affected_rows = UserModel.add_user(newUser)
 
             if affected_rows == 1:
