@@ -43,6 +43,21 @@ def add_user():
             change_of_location=int(request.json["cambioLugar"])
             exercise_difficulty=int(request.json["dificultadEjercicio"])
             dyspnea_activities=int(request.json["disneaActividades"])
+            
+            fruits_vegetables = int(request.json["frutasVerduras"])
+            water = int(request.json["agua"])
+            physical_activity = int(request.json["actividadFisica"])
+            sleep_hours = int(request.json["horasSueño"])
+            nighttime_waking = int(request.json["despertarNocturno"])
+            medical_history = int(request.json["historiaMedica"])
+            medications = int(request.json["medicamentos"])
+            cardiac_history = int(request.json["antecedentesCardiacos"])
+            respiratory_history = int(request.json["antecedentesRespiratorios"])
+            obesity = int(request.json["obesidad"])
+            family_diabetes = ("No" if request.json["diabetesFamilia"] == "0" else request.json["diabetesFamilia"])
+            diabetes = ("No" if request.json["diabetes"] == "0" else request.json["diabetes"])
+            chronic_disease = int(request.json["enfermedadCronica"])
+            disease_details = ("No" if request.json["cualEnfermedad"] == "0" else request.json["cualEnfermedad"])
 
             newPatient =  Patient(
                 str(id), True, first_name, middle_name, last_name, tutor_id, doctor_id, date_of_birth
@@ -50,9 +65,13 @@ def add_user():
             
             newPatientGeneralStatus = PatientGeneralStatus(patient_id, general_condition, energy, fever, chest_pain, dizziness, high_temperature, sweating, 
                  palpitations, resting_tachycardia, falls, instability, change_of_location, exercise_difficulty, dyspnea_activities)
-            #newPatientHabitsAndBackgroud = PatientHabitsAndBackgroud()
+            
+            newPatientHabitsAndBackgroud = PatientHabitsAndBackgroud(patient_id, fruits_vegetables, water, physical_activity, sleep_hours, nighttime_waking, medical_history, medications, 
+                                                                     cardiac_history, respiratory_history, obesity, family_diabetes, diabetes, chronic_disease, disease_details)
 
-            affected_rows = PatientModel.add_patient(newPatient,newPatientGeneralStatus)
+            print("newPatientHabitsAndBackgroud",newPatientHabitsAndBackgroud)
+
+            affected_rows = PatientModel.add_patient(newPatient,newPatientGeneralStatus,newPatientHabitsAndBackgroud)
 
             if affected_rows == 1:
                 return jsonify(newPatient.id),201
