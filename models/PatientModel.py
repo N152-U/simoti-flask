@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash as checkph
 
 from database.db import get_connection
-from .entities.Patient import Patient
+from .entities.Patient import Patient, Patients
 
 
 class PatientModel:
@@ -82,5 +82,38 @@ class PatientModel:
 
             connection.close()
             return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+        
+        
+    @classmethod
+    def get_patients(self):
+        try:
+            connection = get_connection()
+
+            pats = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT P.ID AS patient_id,
+                    	P.first_name,
+                    	P.middle_name,
+                    	P.last_name,
+                    	CONCAT (u.first_name, ' ', u.middle_name, ' ', u.last_name) AS tutor,
+                    	P.date_of_birth
+                    FROM
+                    	patients
+                    	P JOIN users u ON u.ID = P.tutor_id
+                    WHERE
+                    	P.active = TRUE"""
+                                    )
+                resultset = cursor.fetchall()
+
+                for row in resultset:
+                    pat = Patients(row[0], row[1], row[2], row[3], row[4], row[5])
+                    pats.append(pat.to_JSON())
+
+            connection.close()
+            return pats
         except Exception as ex:
             raise Exception(ex)

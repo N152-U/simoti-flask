@@ -84,3 +84,17 @@ def add_user():
     else:
         response = jsonify({'message': 'Unauthorized'})
         return response, 401
+    
+    
+@main.route("")
+def get_patients():
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            patients = PatientModel.get_patients()
+            return jsonify(patients)
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401

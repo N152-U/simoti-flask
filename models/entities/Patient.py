@@ -99,3 +99,25 @@ class PatientHabitsAndBackgroud:
             "chronicDisease": self.chronic_disease,
             "diseaseDetails": self.disease_details
         }
+        
+        
+class Patients:
+    def __init__(self, patient_id=None,first_name=None, middle_name=None, last_name=None, tutor=None, date_of_birth=None) -> None:
+
+        self.patient_id = patient_id
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.tutor = tutor
+        self.date_of_birth = date_of_birth
+        
+
+    def to_JSON(self):
+        return {
+            "id": self.patient_id,
+            "firstName": self.first_name,
+            "middleName": self.middle_name,
+            "lastName": self.last_name,
+            "tutor": self.tutor,
+            "dateOfBirth": self.date_of_birth,
+        }
