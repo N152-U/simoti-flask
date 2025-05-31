@@ -98,3 +98,38 @@ def get_patients():
     else:
         response = jsonify({'message': 'Unauthorized'})
         return response, 401
+    
+@main.route("/<id>")
+def get_user(id):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            patient = PatientModel.get_patient(id)
+            if patient != None:
+                return jsonify(patient)
+            else:
+                return jsonify({}), 404
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
+    
+@main.route("/delete/<id>", methods=["DELETE"])
+def delete_patient(id):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+
+            affected_rows = PatientModel.delete_patient(id)
+
+            if affected_rows == 1:
+                return jsonify(id)
+            else:
+                return jsonify({"message": "No patient deleted"}), 404
+
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401

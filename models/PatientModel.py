@@ -117,3 +117,57 @@ class PatientModel:
             return pats
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def delete_patient(self, id):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE patients SET active=false WHERE id = %s", (id,)
+                )
+                affected_rows = cursor.rowcount
+                connection.commit()
+
+            connection.close()
+            return affected_rows
+        
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def get_patient(self,id):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT P.ID AS patient_id,
+                    	P.first_name,
+                    	P.middle_name,
+                    	P.last_name,
+                    	CONCAT (u.first_name, ' ', u.middle_name, ' ', u.last_name) AS tutor,
+                    	P.date_of_birth
+                    FROM
+                    	patients
+                    	P JOIN users u ON u.ID = P.tutor_id
+                    WHERE
+                    	P.active = TRUE
+                    AND p.id = '{0}'
+                    """.format(
+                        id
+                    )
+                )
+                row = cursor.fetchone()
+
+                patient = None
+                if row != None:
+                    patient = Patients(row[0], row[1], row[2], row[3], row[4], row[5])
+                    patient = patient.to_JSON()
+
+            connection.close()
+            return patient
+        except Exception as ex:
+            raise Exception(ex)
+            
