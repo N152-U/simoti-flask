@@ -265,7 +265,7 @@ class EditPatient:
             "date_of_birth": self.date_of_birth,
             "tutor_id": self.tutor_id,
             "doctor_id": self.doctor_id,
-            "generalCondition": self.general_condition,
+            "estadoGeneral": self.general_condition,
             "energy": self.energy,
             "fever": self.fever,
             "chestPain": self.chest_pain,
