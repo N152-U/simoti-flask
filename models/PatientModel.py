@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash as checkph
 
 from database.db import get_connection
-from .entities.Patient import Patient, Patients, DetailPatient
+from .entities.Patient import Patient, Patients, DetailPatient, EditPatient
 
 
 class PatientModel:
@@ -235,4 +235,71 @@ WHERE p.active=true and p.id = '{0}'
             return patient
         except Exception as ex:
             raise Exception(ex)
+        
+
+    @classmethod
+    def get_edit_patient(self,id):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT p.id, p.first_name,
+p.middle_name, 
+p.last_name,
+TO_CHAR(p.date_of_birth, 'DD/MM/YYYY') as date_of_birth,
+p.tutor_id,
+p.doctor_id,
+CASE WHEN pgs.general_condition THEN '1' ELSE '0' END general_condition,
+pgs.energy,
+pgs.fever,
+pgs.chest_pain,
+pgs.dizziness,
+pgs.high_temperature,
+pgs.sweating,
+pgs.palpitations,
+pgs.resting_tachycardia,
+pgs.falls,
+pgs.instability,
+pgs.change_of_location,
+pgs.exercise_difficulty,
+pgs.dyspnea_activities,
+phb.fruits_vegetables,
+phb.water,
+phb.physical_activity,
+phb.sleep_hours,
+phb.nighttime_waking,
+phb.medical_history,
+phb.medications,
+phb.cardiac_history,
+phb.respiratory_history,
+phb.obesity,
+phb.family_diabetes,
+phb.diabetes,
+phb.chronic_disease,
+phb.disease_details
+FROM patients p 
+INNER JOIN patient_general_status pgs ON pgs.patient_id = p.id
+INNER JOIN patient_habits_and_backgrounds phb ON phb.patient_id = p.id
+WHERE p.active=true and p.id = '{0}'
+                    """.format(
+                        id
+                    )
+                )
+                row = cursor.fetchone()
+
+                patient = None
+                if row != None:
+                    patient = EditPatient(row[0], row[1], row[2], row[3], row[4], row[5],
+                            row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13]
+                            , row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21]
+                            , row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29]
+                            , row[30], row[31], row[32], row[33], row[34])
+                    patient = patient.to_JSON()
+
+            connection.close()
+            return patient
+        except Exception as ex:
+            raise Exception(ex)
+            
             
