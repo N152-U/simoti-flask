@@ -115,6 +115,22 @@ def get_user(id):
         response = jsonify({'message': 'Unauthorized'})
         return response, 401
     
+@main.route("/detail/<id>")
+def get_detail_user(id):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            patient = PatientModel.get_detail_patient(id)
+            if patient != None:
+                return jsonify(patient)
+            else:
+                return jsonify({}), 404
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
+    
 @main.route("/delete/<id>", methods=["DELETE"])
 def delete_patient(id):
     has_access = Security.verify_token(request.headers)
