@@ -14,7 +14,15 @@ class PatientModel:
             with connection.cursor() as cursor:
                 cursor.execute(
                     """INSERT INTO patients (id, active, first_name, middle_name, last_name, tutor_id, doctor_id, date_of_birth) 
-                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s)""",
+                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s)
+                                ON CONFLICT (id) DO UPDATE SET
+                    active = EXCLUDED.active,
+                    first_name = EXCLUDED.first_name,
+                    middle_name = EXCLUDED.middle_name,
+                    last_name = EXCLUDED.last_name,
+                    tutor_id = EXCLUDED.tutor_id,
+                    doctor_id = EXCLUDED.doctor_id,
+                    date_of_birth = EXCLUDED.date_of_birth""",
                     (
                         patient.id,
                         patient.active,
@@ -30,7 +38,22 @@ class PatientModel:
                 cursor.execute(
                     """INSERT INTO patient_general_status (patient_id, general_condition, energy, fever, chest_pain, dizziness, high_temperature, sweating, 
                  palpitations, resting_tachycardia, falls, instability, change_of_location, exercise_difficulty, dyspnea_activities) 
-                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s)""",
+                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s)
+                                ON CONFLICT (patient_id) DO UPDATE SET
+                    general_condition = EXCLUDED.general_condition,
+                    energy = EXCLUDED.energy,
+                    fever = EXCLUDED.fever,
+                    chest_pain = EXCLUDED.chest_pain,
+                    dizziness = EXCLUDED.dizziness,
+                    high_temperature = EXCLUDED.high_temperature,
+                    sweating = EXCLUDED.sweating,
+                    palpitations = EXCLUDED.palpitations,
+                    resting_tachycardia = EXCLUDED.resting_tachycardia,
+                    falls = EXCLUDED.falls,
+                    instability = EXCLUDED.instability,
+                    change_of_location = EXCLUDED.change_of_location,
+                    exercise_difficulty = EXCLUDED.exercise_difficulty,
+                    dyspnea_activities = EXCLUDED.dyspnea_activities""",
                     (
                         patient.id,
                         True if patientGeneralStatus.general_condition == 1 else False,
@@ -55,7 +78,22 @@ class PatientModel:
                 cursor.execute(
                     """INSERT INTO patient_habits_and_backgrounds (patient_id, fruits_vegetables, water, physical_activity, sleep_hours, nighttime_waking, 
                     medical_history, medications, cardiac_history, respiratory_history, obesity, family_diabetes, diabetes, chronic_disease, disease_details) 
-                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s)""",
+                                VALUES (%s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s)
+                                ON CONFLICT (patient_id) DO UPDATE SET
+                    fruits_vegetables = EXCLUDED.fruits_vegetables,
+                    water = EXCLUDED.water,
+                    physical_activity = EXCLUDED.physical_activity,
+                    sleep_hours = EXCLUDED.sleep_hours,
+                    nighttime_waking = EXCLUDED.nighttime_waking,
+                    medical_history = EXCLUDED.medical_history,
+                    medications = EXCLUDED.medications,
+                    cardiac_history = EXCLUDED.cardiac_history,
+                    respiratory_history = EXCLUDED.respiratory_history,
+                    obesity = EXCLUDED.obesity,
+                    family_diabetes = EXCLUDED.family_diabetes,
+                    diabetes = EXCLUDED.diabetes,
+                    chronic_disease = EXCLUDED.chronic_disease,
+                    disease_details = EXCLUDED.disease_details""",
                     (
                         patient.id,
                         True if newPatientHabitsAndBackgroud.fruits_vegetables == 1 else False,
@@ -100,7 +138,7 @@ class PatientModel:
                     	P.middle_name,
                     	P.last_name,
                     	CONCAT (u.first_name, ' ', u.middle_name, ' ', u.last_name) AS tutor,
-                    	P.date_of_birth
+                    	TO_CHAR(p.date_of_birth, 'DD-MM-YYYY') date_of_birth
                     FROM
                     	patients
                     	P JOIN users u ON u.ID = P.tutor_id
@@ -148,7 +186,7 @@ class PatientModel:
                     	P.middle_name,
                     	P.last_name,
                     	CONCAT (u.first_name, ' ', u.middle_name, ' ', u.last_name) AS tutor,
-                    	P.date_of_birth
+                    	TO_CHAR(p.date_of_birth, 'DD-MM-YYYY') date_of_birth
                     FROM
                     	patients
                     	P JOIN users u ON u.ID = P.tutor_id
