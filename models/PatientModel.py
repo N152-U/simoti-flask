@@ -179,7 +179,7 @@ class PatientModel:
             with connection.cursor() as cursor:
                 cursor.execute(
                     """SELECT p.id, CONCAT(p.first_name,' ',p.middle_name, '', p.last_name) as full_name_patient,
-p.date_of_birth,
+TO_CHAR(p.date_of_birth, 'DD-MM-YYYY'),
 CONCAT(ut.first_name,' ',ut.middle_name, '', ut.last_name) as full_name_tutor,
 CONCAT(um.first_name,' ',um.middle_name, '', um.last_name) as full_name_doctor,
 pgs.general_condition,
