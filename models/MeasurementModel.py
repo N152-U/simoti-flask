@@ -163,15 +163,15 @@ class MeasurementModel:
             raise Exception(ex)
 
     @classmethod
-    def get_measurements_temperature_by_patient(self, patient_id):
+    def get_measurements_temperature_by_patient(self, patient_id,initial_date,end_date):
         try:
             connection = get_connection()
             measurements = []
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id,value,active,created_at FROM temperature WHERE active= true AND patient_id = '{0}' ORDER BY created_at DESC".format(
-                        patient_id
+                    "SELECT id,value,active,created_at FROM temperature WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                        patient_id,initial_date,end_date
                     )
                 )
                 resultset = cursor.fetchall()

@@ -150,13 +150,13 @@ def get_measurements_temperature():
         return response, 401
 
 
-@main.route("/temperature/patient/<patient_id>")
-def get_measurements_temperature_by_patient(patient_id):
+@main.route("/temperature/patient/<patient_id>/<initial_date>/<end_date>")
+def get_measurements_temperature_by_patient(patient_id,initial_date,end_date):
     has_access = Security.verify_token(request.headers)
     if has_access:
         try:
             measurements_temperature = (
-                MeasurementModel.get_measurements_temperature_by_patient(patient_id)
+                MeasurementModel.get_measurements_temperature_by_patient(patient_id,initial_date,end_date)
             )
             if measurements_temperature != None:
                 return jsonify(measurements_temperature)
