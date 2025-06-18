@@ -7,6 +7,7 @@ from models.entities.Measurements import (
     heartRate,
     temperature,
     FallDetector,
+    LocationAdd
 )
 
 # Models
@@ -78,6 +79,30 @@ def get_measurements_oxygen_saturation_add():
     else:
         response = jsonify({"message": "Unauthorized"})
         return response, 401
+    
+@main.route("/location/add", methods=["POST"])
+def get_measurements_location_add():
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            latitude = request.json["latitude"]
+            longitude = request.json["longitude"]
+            patient_id = request.json["patient_id"]
+            location = LocationAdd(latitude, longitude, patient_id)
+            affected_rows = MeasurementModel.get_measurements_location_add(
+                location
+            )
+
+            if affected_rows == 1:
+                return jsonify({"message": "Success"}), 201
+            else:
+                return jsonify({"message": "Error on insert"}), 500
+
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({"message": "Unauthorized"})
+        return response, 401
 
 
 @main.route("/heartRate")
@@ -116,9 +141,6 @@ def get_measurements_heart_rate_by_patient(patient_id):
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
     try:
-        print('ENtro al controlador');
-        print('data',request);
-        print('request',request.json["value"],request.json["patient_id"])
         value = request.json["value"]
         patient_id = request.json["patient_id"]
         rate = heartRate(value, patient_id)
@@ -131,9 +153,9 @@ def get_measurements_heart_rate_add():
 
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
-'''     else:
+    else:
         response = jsonify({"message": "Unauthorized"})
-        return response, 401 '''
+        return response, 401
 
 
 @main.route("/temperature")
@@ -255,15 +277,15 @@ def get_measurements_fall_detector_add():
 @main.route("/location/<startDate>/<finalDate>")
 def get_locations_by_date(startDate, finalDate):
     has_access = Security.verify_token(request.headers)
-    # if has_access:
-    try:
-        locations = MeasurementModel.get_locations_by_date(startDate, finalDate)
-        if locations != None:
-            return jsonify({"features": locations, "type": "FeatureCollection"})
-        else:
-            return jsonify({}), 404
-    except Exception as ex:
-        return jsonify({"message": str(ex)}), 500
-    # else:
-    #   response = jsonify({"message": "Unauthorized"})
-    # return response, 401
+    if has_access:
+        try:
+            locations = MeasurementModel.get_locations_by_date(startDate, finalDate)
+            if locations != None:
+                return jsonify({"features": locations, "type": "FeatureCollection"})
+            else:
+                return jsonify({}), 404
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+      response = jsonify({"message": "Unauthorized"})
+    return response, 401
