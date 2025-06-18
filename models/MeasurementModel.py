@@ -5,7 +5,8 @@ from .entities.Measurements import (
     MeasurementsHeartRate,
     MeasurementsTemperature,
     MeasurementsFallDetector,
-    Location
+    Location,
+    LocationPatient
 )
 from datetime import datetime
 
@@ -35,15 +36,15 @@ class MeasurementModel:
             raise Exception(ex)
 
     @classmethod
-    def get_measurements_oxygen_saturation_by_patient(self, patient_id):
+    def get_measurements_oxygen_saturation_by_patient(self, patient_id,initial_date,end_date):
         try:
             connection = get_connection()
             measurements = []
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id,value,active,created_at FROM oxygen_saturation WHERE active= true AND patient_id = '{0}' ORDER BY created_at DESC".format(
-                        patient_id
+                    "SELECT id,value,active,created_at FROM oxygen_saturation WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                        patient_id,initial_date,end_date
                     )
                 )
                 resultset = cursor.fetchall()
@@ -117,15 +118,15 @@ class MeasurementModel:
             raise Exception(ex)
 
     @classmethod
-    def get_measurements_heart_rate_by_patient(self, patient_id):
+    def get_measurements_heart_rate_by_patient(self, patient_id,initial_date,end_date):
         try:
             connection = get_connection()
             measurements = []
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id,value,active,created_at FROM heart_rate WHERE active= true AND patient_id = '{0}' ORDER BY created_at DESC".format(
-                        patient_id
+                    "SELECT id,value,active,created_at FROM heart_rate WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                        patient_id,initial_date,end_date
                     )
                 )
                 resultset = cursor.fetchall()
@@ -247,21 +248,46 @@ class MeasurementModel:
             raise Exception(ex)
 
     @classmethod
-    def get_measurements_fall_detector_by_patient(self, patient_id):
+    def get_measurements_fall_detector_by_patient(self, patient_id,initial_date,end_date):
         try:
             connection = get_connection()
             measurements = []
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id,description,active,created_at FROM fall_detector WHERE active= true AND patient_id = '{0}' ORDER BY created_at DESC".format(
-                        patient_id
+                    "SELECT id,description,active,created_at FROM fall_detector WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                        patient_id,initial_date,end_date
                     )
                 )
                 resultset = cursor.fetchall()
 
                 for row in resultset:
                     measurement = MeasurementsFallDetector(
+                        row[0], row[1], row[2], row[3]
+                    )
+                    measurements.append(measurement.to_JSON())
+
+            connection.close()
+            return measurements
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def get_measurements_location_by_patient(self, patient_id,initial_date,end_date):
+        try:
+            connection = get_connection()
+            measurements = []
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT latitude,longitude,id,created_at FROM location WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                        patient_id,initial_date,end_date
+                    )
+                )
+                resultset = cursor.fetchall()
+
+                for row in resultset:
+                    measurement = LocationPatient(
                         row[0], row[1], row[2], row[3]
                     )
                     measurements.append(measurement.to_JSON())

@@ -40,6 +40,21 @@ class LocationAdd:
             "patient_id": self.patient_id,
         }
 
+class LocationPatient:
+    def __init__(self, latitude=None, longitude=None, id=None, created_at=None) -> None:
+        self.latitude = latitude
+        self.longitude = longitude
+        self.id = id
+        self.created_at = created_at
+
+    def to_JSON(self):
+        return {
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "id": self.id,
+            "created_at": self.created_at,
+        }
+
 
 class MeasurementsHeartRate:
     def __init__(
