@@ -5,6 +5,7 @@ from .entities.Measurements import (
     MeasurementsHeartRate,
     MeasurementsTemperature,
     MeasurementsFallDetector,
+    MeasurementsFallDetectorT,
     Location,
     LocationPatient
 )
@@ -255,15 +256,15 @@ class MeasurementModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT id,description,active,created_at FROM fall_detector WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' ORDER BY created_at DESC".format(
+                    "SELECT id,description,active,created_at, count(*) as total FROM fall_detector WHERE active= true AND patient_id = '{0}' AND created_at BETWEEN '{1} 00:00:00' AND '{2} 23:59:59' GROUP BY id,description,active,created_at ORDER BY created_at DESC".format(
                         patient_id,initial_date,end_date
                     )
                 )
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    measurement = MeasurementsFallDetector(
-                        row[0], row[1], row[2], row[3]
+                    measurement = MeasurementsFallDetectorT(
+                        row[0], row[1], row[2], row[3], row[4]
                     )
                     measurements.append(measurement.to_JSON())
 

@@ -132,6 +132,25 @@ class MeasurementsFallDetector:
             "active": self.active,
             "created_at": self.created_at,
         }
+        
+class MeasurementsFallDetectorT:
+    def __init__(
+        self, id=None, description=None, active: bool = None, created_at=None, valor=None
+    ) -> None:
+        self.id = id
+        self.description = description
+        self.active = active
+        self.created_at = created_at
+        self.valor = valor
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "description": self.description,
+            "active": self.active,
+            "created_at": self.created_at,
+            "value": self.valor,
+        }
 
 
 class FallDetector:
