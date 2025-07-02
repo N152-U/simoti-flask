@@ -178,6 +178,21 @@ def login():
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
+@main.route("/login_tutor", methods=["POST"])
+def login_tutor():
+    try:
+        username = request.json["username"]
+        password = request.json["password"]
+        user = UserValidation(username, password)
+        authenticated_user = UserModel.login_tutor(user)
+        if authenticated_user != None:
+            encoded_token = Security.generate_token(authenticated_user)
+            return jsonify({"message": "Log tutor in", "payload": encoded_token, "id_user": authenticated_user.id, "patient_id": authenticated_user.patient_id})
+        else:
+            response = jsonify({"message": "Credenciales Inválidas"})
+            return response, 401
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
 
 @main.route("/<username>/permissions")
 def get_user_permissions(username):

@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash as checkph
 
 from database.db import get_connection
-from .entities.User import User, UserType,GetUpdateUser, UserConfirmation
+from .entities.User import User, UserTutorConfirmation, UserType,GetUpdateUser, UserConfirmation
 from .entities.Permission import PermissionList
 
 
@@ -209,6 +209,36 @@ class UserModel:
                     if(checkph(row[7],user.password) == True):
                         authenticated_user = UserConfirmation(
                             row[0], row[1], row[2], row[3], row[4], row[5], row[6]
+                        )
+                    else:
+                        authenticated_user = None
+            connection.close()
+            return authenticated_user
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def login_tutor(cls, user):
+        try:
+            connection = get_connection()
+            authenticated_user = None
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """ SELECT u.id, u.username,u.first_name,u.middle_name,u.last_name,u.role_id,r.role,u.password,p.id as patient_id
+                    FROM users u
+                    INNER JOIN roles r ON r.id = u.role_id
+                    INNER JOIN patients p ON p.tutor_id = u.id
+                    WHERE
+                        u.active AND
+                        p.active AND
+                        u.role_id = 'd88d9411-c944-463a-985c-8d938875d3e3' AND
+                        u.username = '{0}'""".format(user.username)
+                )
+                row = cursor.fetchone()
+                if row != None:
+                    if(checkph(row[7],user.password) == True):
+                        authenticated_user = UserTutorConfirmation(
+                            row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[8]
                         )
                     else:
                         authenticated_user = None

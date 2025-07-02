@@ -135,3 +135,26 @@ class UserConfirmation:
             "roleId": self.role_id,
             "role": self.role,
         }
+    
+class UserTutorConfirmation:
+    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role_id=None, role=None, patient_id=None) -> None:
+        self.id = id
+        self.username = username
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.role_id = role_id
+        self.role = role,
+        self.patient_id = patient_id
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "firstName": self.first_name,
+            "middleName": self.middle_name,
+            "lastName": self.last_name,
+            "roleId": self.role_id,
+            "role": self.role,
+            "patient_id": self.patient_id
+        }
