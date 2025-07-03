@@ -10,7 +10,7 @@ from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, 
 app = Flask(__name__)
 
 # Carga de credenciales
-cred = credentials.Certificate("firebase/simoti-app-firebase-adminsdk-fbsvc-57c8877144.json")
+cred = credentials.Certificate("firebase/simoti-app-firebase-adminsdk-fbsvc-a552106ca7.json")
 firebase_admin.initialize_app(cred)
 
 CORS(app, resources={"*": {"origins": "*"}})
