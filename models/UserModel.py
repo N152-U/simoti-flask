@@ -15,7 +15,7 @@ class UserModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """SELECT u.id, u.username, u.first_name, u.middle_name, u.last_name, r.role, u.active, u.token_fcw
+                    """SELECT u.id, u.username, u.first_name, u.middle_name, u.last_name, r.role, u.token_fcw
                     FROM users u
                     INNER JOIN roles r ON r.id = u.role_id
                     WHERE u.active = true
