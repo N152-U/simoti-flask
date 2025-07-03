@@ -21,6 +21,29 @@ class User:
             "roleName": self.role,
             "active": self.active,
         }
+        
+class UserT:
+    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role=None, active=True, token_fcw=None) -> None:
+        self.id = id
+        self.username = username
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.role = role
+        self.active = active
+        self.token_fcw = token_fcw
+
+    def to_JSON(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "firstName": self.first_name,
+            "middleName": self.middle_name,
+            "lastName": self.last_name,
+            "roleName": self.role,
+            "active": self.active,
+            "token_fcw": self.token_fcw,
+        }
 
 class UserType:
     def __init__(self, id, full_name=None, role=None, active=True) -> None:
