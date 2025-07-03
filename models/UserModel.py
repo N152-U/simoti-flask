@@ -15,7 +15,7 @@ class UserModel:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """SELECT u.id, u.username, u.first_name, u.middle_name, u.last_name, r.role, u.token_fcw
+                    """SELECT u.id, u.username, u.first_name, u.middle_name, u.last_name, r.role, u.active, u.token_fcw
                     FROM users u
                     INNER JOIN roles r ON r.id = u.role_id
                     WHERE u.active = true
@@ -24,7 +24,7 @@ class UserModel:
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    user = UserT(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+                    user = UserT(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
                     users.append(user.to_JSON())
 
             connection.close()

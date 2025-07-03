@@ -30,6 +30,7 @@ class UserT:
         self.middle_name = middle_name
         self.last_name = last_name
         self.role = role
+        self.active = active
         self.token_fcw = token_fcw
 
     def to_JSON(self):
@@ -40,7 +41,8 @@ class UserT:
             "middleName": self.middle_name,
             "lastName": self.last_name,
             "roleName": self.role,
-            "token_fcw": self.token_fcw,
+            "active": self.active,
+            "tokenFcw": self.token_fcw
         }
 
 class UserType:
