@@ -173,7 +173,25 @@ class UserModel:
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
+    
+    @classmethod
+    def update_user_token(self, token, id):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """UPDATE users SET 
+                    token_fcw= %s
+                    WHERE id = %s""",
+                    (token,id),
+                )
+                affected_rows = cursor.rowcount
+                connection.commit()
 
+            connection.close()
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
     @classmethod
     def delete_user(self, user):
         try:
@@ -224,7 +242,20 @@ class UserModel:
             authenticated_user = None
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """ SELECT u.id, u.username,u.first_name,u.middle_name,u.last_name,u.role_id,r.role,u.password,p.id as patient_id
+                    """ SELECT 
+                    u.id, 
+                    u.username,
+                    u.first_name,
+                    u.middle_name,
+                    u.last_name,
+                    u.role_id,
+                    r.role,
+                    u.password,
+                    p.id as patient_id,
+                    CASE 
+                        WHEN u.token_fcw  IS NULL THEN 'NO'
+                        ELSE u.token_fcw
+                    END AS token_fcw
                     FROM users u
                     INNER JOIN roles r ON r.id = u.role_id
                     INNER JOIN patients p ON p.tutor_id = u.id
@@ -238,7 +269,7 @@ class UserModel:
                 if row != None:
                     if(checkph(row[7],user.password) == True):
                         authenticated_user = UserTutorConfirmation(
-                            row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[8]
+                            row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[8], row[9]
                         )
                     else:
                         authenticated_user = None

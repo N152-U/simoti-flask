@@ -2,16 +2,18 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 from waitress import serve
 from config import config
-
-
+import firebase_admin
+from firebase_admin import credentials, messaging
 # Routes
 from routes import PermissionRouter, RoleRouter, UserRouter, MeasurementRouter, CatalogRouter, PatientRouter
 
 app = Flask(__name__)
 
+# Carga de credenciales
+cred = credentials.Certificate("firebase/simoti-app-firebase-adminsdk-fbsvc-57c8877144.json")
+firebase_admin.initialize_app(cred)
 
 CORS(app, resources={"*": {"origins": "*"}})
-
 
 def page_not_found(error):
     return "<h1>Bienvenido a la API de SIMOTI</h1>", 404

@@ -137,15 +137,16 @@ class UserConfirmation:
         }
     
 class UserTutorConfirmation:
-    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role_id=None, role=None, patient_id=None) -> None:
+    def __init__(self, id, username=None, first_name=None, middle_name=None, last_name=None, role_id=None, role=None, patient_id=None, token_fcw=None) -> None:
         self.id = id
         self.username = username
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
         self.role_id = role_id
-        self.role = role,
+        self.role = role
         self.patient_id = patient_id
+        self.token_fcw = token_fcw
 
     def to_JSON(self):
         return {
@@ -156,5 +157,6 @@ class UserTutorConfirmation:
             "lastName": self.last_name,
             "roleId": self.role_id,
             "role": self.role,
-            "patient_id": self.patient_id
+            "patient_id": self.patient_id,
+            "token_fcw" : self.token_fcw,
         }

@@ -187,13 +187,40 @@ def login_tutor():
         authenticated_user = UserModel.login_tutor(user)
         if authenticated_user != None:
             encoded_token = Security.generate_token(authenticated_user)
-            return jsonify({"message": "Log tutor in", "payload": encoded_token, "id_user": authenticated_user.id, "patient_id": authenticated_user.patient_id})
+            return jsonify(
+                {"message": "Log tutor in", 
+                 "payload": encoded_token, 
+                 "id_user": authenticated_user.id, 
+                 "patient_id": authenticated_user.patient_id, 
+                 "isTokenFcw": authenticated_user.token_fcw
+                }
+            )
         else:
             response = jsonify({"message": "Credenciales Inválidas"})
             return response, 401
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
+@main.route("/addTokenFcw/<id>", methods=["PUT"])
+def update_user_token(id):
+    has_access = Security.verify_token(request.headers)
+    if has_access:
+        try:
+            token = request.json["token"]
+
+            affected_rows = UserModel.update_user_token(token,id)
+
+            if affected_rows == 1:
+                return jsonify({"message": "User updated"})
+            else:
+                return jsonify({"message": "No user updated"}), 404
+
+        except Exception as ex:
+            return jsonify({"message": str(ex)}), 500
+    else:
+        response = jsonify({'message': 'Unauthorized'})
+        return response, 401
+    
 @main.route("/<username>/permissions")
 def get_user_permissions(username):
     has_access = Security.verify_token(request.headers)

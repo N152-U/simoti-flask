@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 import uuid
+import firebase_admin
+from firebase_admin import credentials, messaging
 
 # Entities
 from models.entities.Measurements import (
@@ -306,3 +308,31 @@ def get_locations_by_date(startDate, finalDate):
     else:
       response = jsonify({"message": "Unauthorized"})
     return response, 401
+
+@main.route('/send-alert', methods=['POST'])
+def send_push_notification():
+    data = request.json
+
+    #obtener token de la BD
+    
+    device_token = data.get("token")  # El FCM token del dispositivo
+    title = data.get("title", "Alerta médica")
+    body = data.get("body", "El paciente ha superado los límites de temperatura.")
+    
+    if not device_token:
+        return jsonify({"error": "Token del dispositivo requerido"}), 400
+
+    # Crear el mensaje
+    message = messaging.Message(
+        notification=messaging.Notification(
+            title=title,
+            body=body
+        ),
+        token=device_token
+    )
+
+    try:
+        response = messaging.send(message)
+        return jsonify({"message": "Notificación enviada", "response_id": response}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
