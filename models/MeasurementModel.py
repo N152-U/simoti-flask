@@ -339,3 +339,31 @@ class MeasurementModel:
             return measurements
         except Exception as ex:
             raise Exception(ex)
+
+@classmethod
+def get_token_tutor(self, patient_id):
+    try:
+        connection = get_connection()
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT ut.token_fcw
+                FROM patients p 
+                INNER JOIN users ut ON ut.id = p.tutor_id
+                WHERE p.active = true AND p.id = %s
+                """,
+                (patient_id,)
+            )
+            row = cursor.fetchone()
+
+            token = None
+            if row is not None:
+                token = row[0]
+
+        connection.close()
+        return token
+    except Exception as ex:
+        raise Exception(ex)
+
+            

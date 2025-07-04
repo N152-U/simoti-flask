@@ -139,7 +139,6 @@ def get_measurements_heart_rate_by_patient(patient_id,initial_date,end_date):
         response = jsonify({"message": "Unauthorized"})
         return response, 401
 
-
 @main.route("/heartRate/add", methods=["POST"])
 def get_measurements_heart_rate_add():
     try:
@@ -149,6 +148,28 @@ def get_measurements_heart_rate_add():
         affected_rows = MeasurementModel.get_measurements_heart_rate_add(rate)
 
         if affected_rows == 1:
+            
+            if value < 60:
+                from models.TutorModel import TutorModel 
+                from firebase_admin import messaging
+
+                device_token = MeasurementModel.get_token_tutor(patient_id)
+
+                if device_token:
+                    message = messaging.Message(
+                        notification=messaging.Notification(
+                            title="Alerta: Frecuencia cardíaca baja",
+                            body=f"La frecuencia cardíaca registrada es {value} bpm. Favor de verificar al paciente."
+                        ),
+                        token=device_token
+                    )
+
+                    try:
+                        response = messaging.send(message)
+                        print(f"Notificación enviada: {response}")
+                    except Exception as e:
+                        print(f"Error al enviar la notificación: {str(e)}")
+
             return jsonify({"message": "Success"}), 201
         else:
             return jsonify({"message": "Error on insert"}), 500
@@ -158,6 +179,7 @@ def get_measurements_heart_rate_add():
     else:
         response = jsonify({"message": "Unauthorized"})
         return response, 401
+
 
 
 @main.route("/temperature")
