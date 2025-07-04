@@ -150,9 +150,6 @@ def get_measurements_heart_rate_add():
         if affected_rows == 1:
             
             if value < 60:
-                from models.TutorModel import TutorModel 
-                from firebase_admin import messaging
-
                 device_token = MeasurementModel.get_token_tutor(patient_id)
 
                 if device_token:
