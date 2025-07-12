@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 import uuid
 import firebase_admin
 from firebase_admin import credentials, messaging
+from datetime import datetime
 
 # Entities
 from models.entities.Measurements import (
@@ -155,7 +156,7 @@ def get_measurements_heart_rate_add():
                 if device_token:
                     message = messaging.Message(
                         notification=messaging.Notification(
-                            title="Alerta: Frecuencia cardíaca baja",
+                            title="Alerta: Frecuencia cardíaca fuera de lo normal",
                             body=f"La frecuencia cardíaca registrada es {value} bpm. Favor de verificar al paciente."
                         ),
                         token=device_token
@@ -355,3 +356,20 @@ def send_push_notification():
         return jsonify({"message": "Notificación enviada", "response_id": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@main.route("/add/<patient_id>/", methods=["POST"])
+def measurements_automatic_add(patient_id):
+    try:
+        
+        affected_rows = MeasurementModel.measurements_automatic_add(
+            patient_id
+        )
+        
+        if affected_rows['success'] == True:
+            return jsonify(affected_rows), 201
+        else:
+            return jsonify({"message": "Error on insert"}), 500
+        return jsonify({"message": "Success"}), 201
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
