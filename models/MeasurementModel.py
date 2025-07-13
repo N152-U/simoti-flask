@@ -433,4 +433,68 @@ class MeasurementModel:
         }
         except Exception as ex:
             raise Exception(ex)
+
+    @classmethod
+    def measurements_wearable_add(self, add):
+        try:
+            conn = get_connection()
+            cur = conn.cursor()
+            now = datetime.now()
+            # Indicador: frecuencia cardíaca
+            #heart_rate = random.randint(60, 100)
+            cur.execute(
+                "INSERT INTO heart_rate (patient_id, value, created_at) VALUES (%s, %s, %s)",
+                (add.patient_id, add.pulso, now)
+            )
+
+            # Indicador: temperatura
+            #temperature = round(random.uniform(36.0, 37.5), 3)
+            cur.execute(
+                "INSERT INTO temperature (patient_id, value, created_at) VALUES (%s, %s, %s)",
+                (add.patient_id, add.temperatura, now)
+            )
+
+            # Indicador: saturación de oxígeno
+            #oxygen_saturation = random.randint(89, 100)
+            cur.execute(
+                "INSERT INTO oxygen_saturation (patient_id, value, created_at) VALUES (%s, %s, %s)",
+                (add.patient_id, add.spo2, now)
+            )
+
+            # Indicador: caída detectada
+            # fall_description = 'CAIDA'
+            # cur.execute(
+            #     "INSERT INTO fall_detector (patient_id, description, created_at) VALUES (%s, %s, %s)",
+            #     (patient_id, fall_description, now)
+            # )
+
+            # Indicador: ubicación
+            # base_lat = 19.511440046721333
+            # base_lon = -99.12618267436048
+            # latitude = base_lat + (random.random() - 0.5) * 0.00018
+            # longitude = base_lon + (random.random() - 0.5) * 0.00018
+            cur.execute(
+                "INSERT INTO location (patient_id, latitude, longitude, created_at) VALUES (%s, %s, %s, %s)",
+                (add.patient_id, add.latitude, add.longitude, now)
+            )
+            
+            conn.commit()
+            cur.close()
+            conn.close()
+    
+            return {
+            'message': f'Datos insertados correctamente para el paciente {add.patient_id}',
+            'success': True,
+            'data': {
+                'heart_rate': add.pulso,
+                'temperature': add.temperatura,
+                'oxygen_saturation': add.spo2,
+                'lat': add.latitude,
+                'lon': add.longitude,
+                'timestamp': now.isoformat()
+            }
+        }
+        except Exception as ex:
+            print(ex)
+            raise Exception(ex)
     

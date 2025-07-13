@@ -163,6 +163,24 @@ class FallDetector:
             "description": self.description,
             "patient_id": self.patient_id,
         }
+    
+class WearableAdd: 
+    def __init__(self, pulso=None, temperatura=None, spo2=None,latitude=None, longitude=None, patient_id=None) -> None:
+        self.pulso = pulso
+        self.temperatura = temperatura
+        self.spo2 = spo2
+        self.longitude = longitude
+        self.latitude= latitude
+        self.patient_id = patient_id
+    def to_JSON(self):
+        return {
+            "pulso": self.pulso,
+            "temperatura": self.temperatura,
+            "spo2": self.spo2,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "patient_id": self.patient_id
+        }
 
 
 class Location:
