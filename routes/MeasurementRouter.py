@@ -3,6 +3,7 @@ import uuid
 import firebase_admin
 from firebase_admin import credentials, messaging
 from datetime import datetime
+import random
 
 # Entities
 from models.entities.Measurements import (
