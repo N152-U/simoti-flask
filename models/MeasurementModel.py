@@ -466,7 +466,7 @@ class MeasurementModel:
             if add.caida == True:
                 cur.execute(
                      "INSERT INTO fall_detector (patient_id, description, created_at) VALUES (%s, %s, %s)",
-                    (patient_id, 'CAIDA', now)
+                    (add.patient_id, 'CAIDA', now)
                 )
 
             # Indicador: ubicación
