@@ -413,7 +413,7 @@ def measurements_wearable_add(patient_id):
         add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id,caida)
         affected_rows = MeasurementModel.measurements_wearable_add(add)
         
-        if affected_rows == 1:
+        if affected_rows.get("success"):
             
             device_token = MeasurementModel.get_token_tutor(patient_id)
             
