@@ -401,6 +401,7 @@ def measurements_wearable_add(patient_id):
         spo2 = request.json["spo2"]
         latitude = request.json["latitude"]
         longitude = request.json["longitude"]
+        caida = request.json["caida"]
         patient_id = patient_id
         
         if latitude == 0:
@@ -409,7 +410,7 @@ def measurements_wearable_add(patient_id):
             latitude = base_lat + (random.random() - 0.5) * 0.00018
             longitude = base_lon + (random.random() - 0.5) * 0.00018
         
-        add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id)
+        add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id,caida)
         affected_rows = MeasurementModel.measurements_wearable_add(add)
         
         if affected_rows == 1:
