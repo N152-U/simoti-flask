@@ -168,7 +168,7 @@ def get_measurements_heart_rate_add():
 
         if affected_rows == 1:
             
-            if value < 60 or value > 100:
+            if value < 66 or value > 100:
                 device_token = MeasurementModel.get_token_tutor(patient_id)
 
                 if device_token:
@@ -403,7 +403,48 @@ def measurements_wearable_add(patient_id):
         patient_id = patient_id
         add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id)
         affected_rows = MeasurementModel.measurements_wearable_add(add)
-        return jsonify(affected_rows), 201 if affected_rows.get("success") else 500
+        
+        if affected_rows == 1:
+            
+            device_token = MeasurementModel.get_token_tutor(patient_id)
+            
+            if pulso < 66 or pulso > 100:
+                
+                if device_token:
+                    message = messaging.Message(
+                        notification=messaging.Notification(
+                            title="Alerta: Frecuencia cardíaca fuera de lo normal",
+                            body=f"La frecuencia cardíaca registrada es {pulso} bpm. Favor de verificar al paciente."
+                        ),
+                        token=device_token
+                    )
 
+                    try:
+                        response = messaging.send(message)
+                        print(f"Notificación enviada: {response}")
+                    except Exception as e:
+                        print(f"Error al enviar la notificación: {str(e)}")
+                        
+            if spo2 < 88:
+
+                    if device_token:
+                        messageOx = messaging.Message(
+                            notification=messaging.Notification(
+                                title="Alerta: Saturación de oxígeno fuera de lo normal",
+                                body=f"La saturación de oxígeno registrada es del {spo2}%. Favor de verificar al paciente."
+                            ),
+                            token=device_token
+                        )
+
+                        try:
+                            response = messaging.send(messageOx)
+                            print(f"Notificación enviada: {response}")
+                        except Exception as e:
+                            print(f"Error al enviar la notificación: {str(e)}")  
+
+            return jsonify({"message": "Success"}), 201
+        else:
+            return jsonify({"message": "Error on insert"}), 500
+        #return jsonify(affected_rows), 201 if affected_rows.get("success") else 500
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
