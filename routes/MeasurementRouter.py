@@ -401,6 +401,13 @@ def measurements_wearable_add(patient_id):
         latitude = request.json["latitude"]
         longitude = request.json["longitude"]
         patient_id = patient_id
+        
+        if latitude == 0
+            base_lat = 19.511440046721333
+            base_lon = -99.12618267436048
+            latitude = base_lat + (random.random() - 0.5) * 0.00018
+            longitude = base_lon + (random.random() - 0.5) * 0.00018
+        
         add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id)
         affected_rows = MeasurementModel.measurements_wearable_add(add)
         
@@ -440,7 +447,7 @@ def measurements_wearable_add(patient_id):
                             response = messaging.send(messageOx)
                             print(f"Notificación enviada: {response}")
                         except Exception as e:
-                            print(f"Error al enviar la notificación: {str(e)}")  
+                            print(f"Error al enviar la notificación: {str(e)}")
 
             return jsonify({"message": "Success"}), 201
         else:
