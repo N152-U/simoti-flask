@@ -73,6 +73,23 @@ def get_measurements_oxygen_saturation_add():
             )
 
             if affected_rows == 1:
+                if value < 88:
+                    device_token = MeasurementModel.get_token_tutor(patient_id)
+
+                    if device_token:
+                        message = messaging.Message(
+                            notification=messaging.Notification(
+                                title="Alerta: Saturación de oxígeno fuera de lo normal",
+                                body=f"La saturación de oxígeno registrada es {value}%. Favor de verificar al paciente."
+                            ),
+                            token=device_token
+                        )
+
+                        try:
+                            response = messaging.send(message)
+                            print(f"Notificación enviada: {response}")
+                        except Exception as e:
+                            print(f"Error al enviar la notificación: {str(e)}")                
                 return jsonify({"message": "Success"}), 201
             else:
                 return jsonify({"message": "Error on insert"}), 500
@@ -150,7 +167,7 @@ def get_measurements_heart_rate_add():
 
         if affected_rows == 1:
             
-            if value < 60:
+            if value < 60 or value > 100:
                 device_token = MeasurementModel.get_token_tutor(patient_id)
 
                 if device_token:
