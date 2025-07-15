@@ -403,7 +403,7 @@ def measurements_wearable_add(patient_id):
         longitude = request.json["longitude"]
         patient_id = patient_id
         
-        if latitude == 0
+        if latitude == 0:
             base_lat = 19.511440046721333
             base_lon = -99.12618267436048
             latitude = base_lat + (random.random() - 0.5) * 0.00018
