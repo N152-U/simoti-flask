@@ -6,6 +6,7 @@ from datetime import datetime
 
 # Entities
 from models.entities.Measurements import (
+    WearableAdd,
     oxygenSaturation,
     heartRate,
     temperature,
@@ -388,5 +389,21 @@ def measurements_automatic_add(patient_id):
         else:
             return jsonify({"message": "Error on insert"}), 500
         return jsonify({"message": "Success"}), 201
+    except Exception as ex:
+        return jsonify({"message": str(ex)}), 500
+    
+@main.route("/addWearable/<patient_id>/", methods=["POST"])
+def measurements_wearable_add(patient_id):
+    try:
+        pulso = request.json["pulso"]
+        temperatura = request.json["temperatura"]
+        spo2 = request.json["spo2"]
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+        patient_id = patient_id
+        add = WearableAdd(pulso, temperatura, spo2, latitude, longitude, patient_id)
+        affected_rows = MeasurementModel.measurements_wearable_add(add)
+        return jsonify(affected_rows), 201 if affected_rows.get("success") else 500
+
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
